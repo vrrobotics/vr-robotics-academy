@@ -15,6 +15,15 @@ export async function getStaticPaths() {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>VR Robotics Academy</title>
+    <script>
+      // Handle redirect from 404.html
+      if (sessionStorage.redirect) {
+        const redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        // Navigate using React Router by updating URL
+        window.history.replaceState(null, null, '/vr-robotics-academy' + redirect);
+      }
+    </script>
     <style>
       * {
         margin: 0;

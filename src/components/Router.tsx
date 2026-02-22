@@ -11,7 +11,7 @@ const HomePage = lazy(() => import("@/components/pages/HomePage").catch(() => {
         <h1>🚀 VR Robotics Academy</h1>
         <p>Welcome to the home page</p>
         <p style={{ color: '#666' }}>The router is working!</p>
-        <a href="/curriculum" style={{ display: 'inline-block', marginTop: '20px', padding: '10px 20px', background: '#007bff', color: 'white', textDecoration: 'none', borderRadius: '5px' }}>
+        <a href="/vr-robotics-academy/curriculum" style={{ display: 'inline-block', marginTop: '20px', padding: '10px 20px', background: '#007bff', color: 'white', textDecoration: 'none', borderRadius: '5px' }}>
           View Curriculum
         </a>
       </div>
