@@ -17,21 +17,42 @@ export default function ProgramFeesPage() {
     setLoading(true);
     const { items } = await BaseCrudService.getAll<ProgramFees>('programfees');
     
-    // Update prices to $150, $250, and $320 for the first three plans
-    const updatedItems = items.map((item, index) => {
-      const prices = [150, 250, 320];
-      if (index < prices.length && item.price !== prices[index]) {
-        // Update the price in the database
-        BaseCrudService.update('programfees', {
-          _id: item._id,
-          price: prices[index]
-        });
-        return { ...item, price: prices[index] };
+    // Default pricing plans for online classes
+    const defaultPlans: ProgramFees[] = [
+      {
+        _id: 'plan-basic',
+        planName: 'Basic',
+        price: 20,
+        billingCycle: 'month',
+        shortDescription: 'Perfect for learners who prefer collaborative group learning',
+        featuresSummary: `Group Class - 20 Students Online\nScheduled live sessions (2x per week)\nAccess to all learning materials\nProject assignments & feedback\nRobotics kit rental included\nCommunity forum support\nCompletion certificate`,
+        isRecommended: false,
+        callToActionText: 'Start Learning'
+      },
+      {
+        _id: 'plan-premium',
+        planName: 'Premium',
+        price: 22,
+        billingCycle: 'month',
+        shortDescription: 'Best for students seeking personalized attention and guidance',
+        featuresSummary: `Small Group Class - 5 Students Online\nScheduled live sessions (3x per week)\nAll learning materials + advanced content\nPersonalized feedback on projects\nPriority support & guidance\nRobotics kit rental included\n2 hours 1-on-1 mentoring per month\nProgress tracking dashboard\nProfessional certificate`,
+        isRecommended: true,
+        callToActionText: 'Get Started Now'
+      },
+      {
+        _id: 'plan-elite',
+        planName: 'Elite',
+        price: 25,
+        billingCycle: 'month',
+        shortDescription: 'Ultimate program for serious learners - fully customized learning',
+        featuresSummary: `One-on-One Online Classes\nFlexible scheduling (arrange with instructor)\nCustom curriculum tailored to your goals\nUnlimited 1-on-1 mentoring & guidance\nPremium robotics kit (included)\nAdvanced projects & real-world challenges\nCareer pathway planning\nElite professional certificate\nDirect instructor access`,
+        isRecommended: false,
+        callToActionText: 'Book Your Session'
       }
-      return item;
-    });
+    ];
     
-    setPlans(updatedItems);
+    // Use default plans if database is empty
+    setPlans(items.length > 0 ? items : defaultPlans);
     setLoading(false);
   };
 
@@ -194,36 +215,36 @@ export default function ProgramFeesPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                title: 'Expert Instruction',
-                description: 'Learn from industry professionals with real-world experience'
+                title: '100% Online',
+                description: 'Learn from anywhere - no need to commute or travel'
               },
               {
-                title: 'All Materials',
-                description: 'Robotics kits, VR headsets, and software licenses included'
+                title: 'Expert Instructors',
+                description: 'Industry professionals with real-world robotics experience'
               },
               {
-                title: 'Small Classes',
-                description: 'Maximum 8 students per class for personalized attention'
+                title: 'Virtual Robotics Lab',
+                description: 'VR simulations + physical robotics kits for hands-on learning'
               },
               {
-                title: 'Certificates',
-                description: 'Industry-recognized certificates upon completion'
+                title: 'Live Interactive Sessions',
+                description: 'Real-time instruction with screen sharing and instant feedback'
               },
               {
-                title: 'Project Support',
-                description: 'One-on-one mentorship for your projects'
+                title: 'All Materials Included',
+                description: 'Robotics kits and software licenses included in monthly fee'
               },
               {
-                title: 'Online Resources',
-                description: 'Access to learning platform and video tutorials'
+                title: 'Professional Certificates',
+                description: 'Industry-recognized credentials upon successful completion'
               },
               {
-                title: 'Community Access',
-                description: 'Join our community of young innovators'
+                title: 'Recorded Sessions',
+                description: 'Access replays of live classes anytime for review'
               },
               {
-                title: 'Flexible Schedule',
-                description: 'Weekend and weekday batches available'
+                title: 'Flexible Scheduling',
+                description: 'Choose times that work best for you (weekday & weekend)'
               }
             ].map((item, index) => (
               <motion.div
@@ -265,20 +286,36 @@ export default function ProgramFeesPage() {
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {[
               {
-                question: 'Are there any additional fees?',
-                answer: 'No hidden fees! All materials, equipment, and software are included in the program fee.'
+                question: 'How do online classes work?',
+                answer: 'Classes are taught live via video conferencing with screen sharing, VR demonstrations, and real-time interactive coding. You control your robotics kit from home while the instructor guides you.'
               },
               {
-                question: 'Can I switch plans?',
-                answer: 'Yes, you can upgrade or change your plan at any time. Contact us for details.'
+                question: 'What\'s the difference between Basic, Premium, and Elite?',
+                answer: 'Basic has 20 students per class (group learning), Premium has 5 students (more personalized), and Elite is 1-on-1 with a dedicated instructor. Choose based on the level of attention you need.'
               },
               {
-                question: 'Is there a refund policy?',
-                answer: 'We offer a 30-day money-back guarantee if you\'re not satisfied with the program.'
+                question: 'What happens if I miss a live session?',
+                answer: 'All classes are recorded. You can watch the replay anytime at your convenience. Elite students get priority scheduling to minimize missed sessions.'
               },
               {
-                question: 'Do you offer scholarships?',
-                answer: 'Yes! We offer merit-based and need-based scholarships. Contact us to learn more.'
+                question: 'Are the robotics kits included?',
+                answer: 'Yes! Professional robotics kits are shipped to your home and included in the monthly fee. Return the kit if you cancel your subscription.'
+              },
+              {
+                question: 'Can I upgrade my plan anytime?',
+                answer: 'Absolutely! You can upgrade from Basic → Premium → Elite at any time. Your existing progress carries over immediately.'
+              },
+              {
+                question: 'Is there a money-back guarantee?',
+                answer: 'Yes, we offer a 30-day satisfaction guarantee on all plans. If you\'re not happy with your learning experience, we\'ll refund your first month.'
+              },
+              {
+                question: 'What certifications do I get?',
+                answer: 'Each plan includes a professional certificate upon completion. Elite certificates are enhanced and recognized by top tech companies.'
+              },
+              {
+                question: 'How long is each program?',
+                answer: 'Our basic programs run 8-12 weeks depending on the curriculum track. Elite students can customize their learning timeline with their instructor.'
               }
             ].map((faq, index) => (
               <motion.div
