@@ -16,5 +16,11 @@ export default defineConfig({
     port: 3000,
   },
   
-  output: 'hybrid',
+  output: 'static',
+  
+  vite: {
+    ssr: {
+      external: ['react-router-dom'],
+    },
+  },
 });
