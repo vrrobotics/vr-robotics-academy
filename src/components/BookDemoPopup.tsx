@@ -43,7 +43,7 @@ export default function BookDemoPopup() {
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.8, y: 50, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="glass-pane p-8 rounded-2xl max-w-lg w-full relative"
+            className="glass-pane p-5 rounded-2xl max-w-sm w-full relative"
             onClick={(e) => e.stopPropagation()}
             style={{
               background: 'rgba(255, 140, 66, 0.05)',
@@ -69,42 +69,42 @@ export default function BookDemoPopup() {
                 transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
                 className="inline-block mb-4"
               >
-                <Rocket className="w-16 h-16 text-secondary mx-auto" />
+                <Rocket className="w-12 h-12 text-secondary mx-auto" />
               </motion.div>
               
-              <h3 className="font-heading text-3xl text-secondary mb-4">
+              <h3 className="font-heading text-xl text-secondary mb-4">
                 Ready to Start Your Journey? 🚀
               </h3>
               
               <div className="mb-4">
-                <p className="font-heading text-4xl text-secondary mb-2">₹49</p>
-                <p className="font-paragraph text-lg text-foreground/80">
+                <p className="font-heading text-3xl text-secondary mb-2">₹49</p>
+                <p className="font-paragraph text-base text-foreground/80">
                   Limited Time Demo Class Offer!
                 </p>
               </div>
 
-              <p className="font-paragraph text-base text-foreground/80 mb-6">
+              <p className="font-paragraph text-sm text-foreground/80 mb-6">
                 Book your interactive 60-minute robotics demo class and experience hands-on learning with VR Robotics Academy!
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3 text-left">
-                  <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" />
-                  <span className="font-paragraph text-foreground/90">60-minute interactive demo - Only ₹49</span>
+                <div className="flex items-center gap-2 text-left">
+                  <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
+                  <span className="font-paragraph text-sm text-foreground/90">60-minute interactive demo - Only ₹49</span>
                 </div>
-                <div className="flex items-center gap-3 text-left">
-                  <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" />
-                  <span className="font-paragraph text-foreground/90">Meet our expert instructors</span>
+                <div className="flex items-center gap-2 text-left">
+                  <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
+                  <span className="font-paragraph text-sm text-foreground/90">Meet our expert instructors</span>
                 </div>
-                <div className="flex items-center gap-3 text-left">
-                  <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" />
-                  <span className="font-paragraph text-foreground/90">Try real robotics projects</span>
+                <div className="flex items-center gap-2 text-left">
+                  <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
+                  <span className="font-paragraph text-sm text-foreground/90">Try real robotics projects</span>
                 </div>
               </div>
 
               <Link to="/demo-booking">
                 <motion.button
-                  className="w-full bg-secondary text-secondary-foreground font-heading font-semibold px-8 py-4 rounded-lg text-lg"
+                  className="w-full bg-secondary text-secondary-foreground font-heading font-semibold px-6 py-3 rounded-lg text-base"
                   style={{
                     boxShadow: '0 0 20px rgba(255, 179, 102, 0.4), 0 0 40px rgba(255, 179, 102, 0.2)',
                   }}
