@@ -167,6 +167,7 @@ export default function CollaborationHubPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

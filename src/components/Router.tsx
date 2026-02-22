@@ -32,7 +32,7 @@ const ProgramFeesPage = lazy(() => import("@/components/pages/ProgramFeesPage"))
 const WhyVRRoboticsPage = lazy(() => import("@/components/pages/WhyVRRoboticsPage"));
 const WhatKidsLearnPage = lazy(() => import("@/components/pages/WhatKidsLearnPage"));
 const HowKidsBuildPage = lazy(() => import("@/components/pages/HowKidsBuildPage"));
-const PiRoboticsTinkererPage = lazy(() => import("@/components/pages/PiRoboticsTinkererPage"));
+// const PiRoboticsTinkererPage = lazy(() => import("@/components/pages/PiRoboticsTinkererPage"));
 const PythonProgrammingPage = lazy(() => import("@/components/pages/PythonProgrammingPage"));
 const Interactive3DRobotPage = lazy(() => import("@/components/pages/Interactive3DRobotPage"));
 const Grades1to3CurriculumPage = lazy(() => import("@/components/pages/Grades1to3CurriculumPage"));
@@ -40,7 +40,7 @@ const Grades1to3CurriculumPage = lazy(() => import("@/components/pages/Grades1to
 // Module pages
 const ModuleDetailsPage = lazy(() => import("@/components/pages/ModuleDetailsPage"));
 const Module1DetailsPage = lazy(() => import("@/components/pages/Module1DetailsPage"));
-const Module2DetailsPage = lazy(() => import("@/components/pages/Module2DetailsPage"));
+// const Module2DetailsPage = lazy(() => import("@/components/pages/Module2DetailsPage"));
 const Module3DetailsPage = lazy(() => import("@/components/pages/Module3DetailsPage"));
 const Module4DetailsPage = lazy(() => import("@/components/pages/Module4DetailsPage"));
 const Module5DetailsPage = lazy(() => import("@/components/pages/Module5DetailsPage"));
@@ -50,26 +50,26 @@ const Module8DetailsPage = lazy(() => import("@/components/pages/Module8DetailsP
 const Module9DetailsPage = lazy(() => import("@/components/pages/Module9DetailsPage"));
 
 // Grade-specific modules
-const Module1Grade47Page = lazy(() => import("@/components/pages/Module1Grade47Page"));
-const Module1Grade812Page = lazy(() => import("@/components/pages/Module1Grade812Page"));
-const Module2Grade13Page = lazy(() => import("@/components/pages/Module2Grade13Page"));
-const Module2Grade47Page = lazy(() => import("@/components/pages/Module2Grade47Page"));
-const Module2Grade812Page = lazy(() => import("@/components/pages/Module2Grade812Page"));
-const Module3Grade47Page = lazy(() => import("@/components/pages/Module3Grade47Page"));
-const Module3Grade812Page = lazy(() => import("@/components/pages/Module3Grade812Page"));
-const Module4Grade812Page = lazy(() => import("@/components/pages/Module4Grade812Page"));
-const Module5Grade13Page = lazy(() => import("@/components/pages/Module5Grade13Page"));
-const Module5Grade47Page = lazy(() => import("@/components/pages/Module5Grade47Page"));
-const Module5Grade812Page = lazy(() => import("@/components/pages/Module5Grade812Page"));
-const Module6Grade13Page = lazy(() => import("@/components/pages/Module6Grade13Page"));
-const Module6Grade812Page = lazy(() => import("@/components/pages/Module6Grade812Page"));
-const Module7Grade13Page = lazy(() => import("@/components/pages/Module7Grade13Page"));
-const Module7Grade812Page = lazy(() => import("@/components/pages/Module7Grade812Page"));
-const Module8Grade812Page = lazy(() => import("@/components/pages/Module8Grade812Page"));
-const Module9Grade812Page = lazy(() => import("@/components/pages/Module9Grade812Page"));
-const Module10Grade812Page = lazy(() => import("@/components/pages/Module10Grade812Page"));
-const Module11Grade812Page = lazy(() => import("@/components/pages/Module11Grade812Page"));
-const Module12Grade812Page = lazy(() => import("@/components/pages/Module12Grade812Page"));
+// const Module1Grade47Page = lazy(() => import("@/components/pages/Module1Grade47Page"));
+// const Module1Grade812Page = lazy(() => import("@/components/pages/Module1Grade812Page"));
+// const Module2Grade13Page = lazy(() => import("@/components/pages/Module2Grade13Page"));
+// const Module2Grade47Page = lazy(() => import("@/components/pages/Module2Grade47Page"));
+// const Module2Grade812Page = lazy(() => import("@/components/pages/Module2Grade812Page"));
+// const Module3Grade47Page = lazy(() => import("@/components/pages/Module3Grade47Page"));
+// const Module3Grade812Page = lazy(() => import("@/components/pages/Module3Grade812Page"));
+// const Module4Grade812Page = lazy(() => import("@/components/pages/Module4Grade812Page"));
+// const Module5Grade13Page = lazy(() => import("@/components/pages/Module5Grade13Page"));
+// const Module5Grade47Page = lazy(() => import("@/components/pages/Module5Grade47Page"));
+// const Module5Grade812Page = lazy(() => import("@/components/pages/Module5Grade812Page"));
+// const Module6Grade13Page = lazy(() => import("@/components/pages/Module6Grade13Page"));
+// const Module6Grade812Page = lazy(() => import("@/components/pages/Module6Grade812Page"));
+// const Module7Grade13Page = lazy(() => import("@/components/pages/Module7Grade13Page"));
+// const Module7Grade812Page = lazy(() => import("@/components/pages/Module7Grade812Page"));
+// const Module8Grade812Page = lazy(() => import("@/components/pages/Module8Grade812Page"));
+// const Module9Grade812Page = lazy(() => import("@/components/pages/Module9Grade812Page"));
+// const Module10Grade812Page = lazy(() => import("@/components/pages/Module10Grade812Page"));
+// const Module11Grade812Page = lazy(() => import("@/components/pages/Module11Grade812Page"));
+// const Module12Grade812Page = lazy(() => import("@/components/pages/Module12Grade812Page"));
 
 // Student pages
 const StudentApplicationPage = lazy(() => import("@/components/pages/StudentApplicationPage"));

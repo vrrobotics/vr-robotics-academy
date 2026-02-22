@@ -1,5 +1,24 @@
 ---
-export const prerender = false;
+export const prerender = true;
+
+export async function getStaticPaths() {
+  // Return all possible paths for static generation
+  // For a SPA with React Router, we return common base paths
+  return [
+    { params: { slug: '' } },
+    { params: { slug: 'curriculum' } },
+    { params: { slug: 'admission-process' } },
+    { params: { slug: 'why-vr-robotics' } },
+    { params: { slug: 'program-fees' } },
+    { params: { slug: 'demo-booking' } },
+    { params: { slug: 'student-signup' } },
+    { params: { slug: 'teacher-portal' } },
+    { params: { slug: 'teacher-dashboard' } },
+    { params: { slug: 'certificates' } },
+    { params: { slug: 'not-found' } },
+  ];
+}
+
 import AppRouter from "@/components/Router";
 ---
 
