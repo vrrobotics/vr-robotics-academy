@@ -298,6 +298,42 @@ export default function CertificatesPage() {
   const [certificates, setCertificates] = useState<CertificateExamples[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Default example certificates for GitHub Pages static deployment
+  const defaultCertificates: CertificateExamples[] = [
+    {
+      _id: 'default-1',
+      certificateName: 'Robotics Fundamentals',
+      certificateDescription: 'Master the essential principles of robotics, programming, and STEM innovation',
+      awardedFor: 'Completion of Robotics Fundamentals course with distinction',
+      recipientType: 'Students (Grades 1-12)',
+      issuingAuthority: 'VR Robotics Academy'
+    },
+    {
+      _id: 'default-2',
+      certificateName: 'Advanced 3D Design & CAD',
+      certificateDescription: 'Expert proficiency in 3D modeling, CAD design, and digital fabrication',
+      awardedFor: 'Advanced course completion and project portfolio review',
+      recipientType: 'Students (Grades 4-12)',
+      issuingAuthority: 'VR Robotics Academy'
+    },
+    {
+      _id: 'default-3',
+      certificateName: 'IoT & Microcontroller Specialist',
+      certificateDescription: 'Specialized knowledge in Internet of Things, embedded systems, and microcontrollers',
+      awardedFor: 'IoT course completion with advanced project demonstration',
+      recipientType: 'Students (Grades 8-12)',
+      issuingAuthority: 'VR Robotics Academy'
+    },
+    {
+      _id: 'default-4',
+      certificateName: 'Instructor Certification',
+      certificateDescription: 'Professional certification in robotics education and teaching excellence',
+      awardedFor: 'Instructor training completion and educational contribution',
+      recipientType: 'Teachers & Instructors',
+      issuingAuthority: 'VR Robotics Academy'
+    }
+  ];
+
   useEffect(() => {
     loadCertificates();
   }, []);
@@ -305,7 +341,8 @@ export default function CertificatesPage() {
   const loadCertificates = async () => {
     setLoading(true);
     const { items } = await BaseCrudService.getAll<CertificateExamples>('certificateexamples');
-    setCertificates(items);
+    // Use default certificates if none found in database
+    setCertificates(items.length > 0 ? items : defaultCertificates);
     setLoading(false);
   };
 
