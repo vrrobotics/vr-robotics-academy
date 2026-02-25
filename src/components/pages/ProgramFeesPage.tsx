@@ -4,6 +4,7 @@ import { BaseCrudService } from '@/integrations';
 import { ProgramFees } from '@/entities';
 import { Check, Star } from 'lucide-react';
 import Header from '@/components/Header';
+import BookDemoButton from '@/components/BookDemoButton';
 
 export default function ProgramFeesPage() {
   const [plans, setPlans] = useState<ProgramFees[]>([]);
@@ -186,9 +187,16 @@ export default function ProgramFeesPage() {
                     }`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => window.location.href = '/demo-booking'}
                   >
-                    {plan.callToActionText || 'Get Started'}
+                    <BookDemoButton
+                      variant={plan.isRecommended ? 'primary' : 'outline'}
+                      size="md"
+                      source="program_fees_page"
+                      children={plan.callToActionText || 'Get Started'}
+                      onSuccess={() => {
+                        console.log('User is ready to enroll in:', plan.planName);
+                      }}
+                    />
                   </motion.button>
                 </motion.div>
               ))}
@@ -373,14 +381,12 @@ export default function ProgramFeesPage() {
               transition={{ delay: 0.2 }}
               className="flex flex-wrap justify-center gap-4"
             >
-              <motion.button
-                className="bg-primary text-primary-foreground font-heading font-semibold px-8 py-4 rounded-lg"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => window.location.href = '/demo-booking'}
-              >
-                Book Free Demo
-              </motion.button>
+              <BookDemoButton
+                variant="primary"
+                size="lg"
+                source="program_fees_cta"
+                children="Book Free Demo"
+              />
               <motion.button
                 className="bg-transparent text-secondary border-2 border-secondary font-heading font-semibold px-8 py-4 rounded-lg"
                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 211, 158, 0.1)' }}

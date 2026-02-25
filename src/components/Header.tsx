@@ -5,6 +5,7 @@ import { Menu, X, ChevronDown, Bell } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { Image } from '@/components/ui/image';
 import { messageService } from '@/services/messageService';
+import RazorpayService from '@/services/razorpayService';
 
 // Analytics tracking helper
 const trackEvent = (eventName: string, eventData?: Record<string, any>) => {
@@ -184,16 +185,32 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link to="/demo-booking">
-                <motion.button
-                  className="bg-primary text-primary-foreground font-heading font-semibold px-6 py-3 rounded-[10px]"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => trackEvent('cta_click', { button: 'book_demo_header' })}
-                >
-                  Book Demo
-                </motion.button>
-              </Link>
+              <motion.button
+                className="bg-primary text-primary-foreground font-heading font-semibold px-6 py-3 rounded-[10px]"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={async () => {
+                  trackEvent('cta_click', { button: 'book_demo_header' });
+                  await RazorpayService.initiateDemo1DollarPayment(
+                    (response) => {
+                      console.log('✓ Payment successful:', response);
+                      trackEvent('demo_booking_payment_success', { 
+                        source: 'header',
+                        paymentId: response.razorpay_payment_id 
+                      });
+                    },
+                    (error) => {
+                      console.error('✗ Payment failed:', error);
+                      trackEvent('demo_booking_payment_failed', { 
+                        source: 'header',
+                        error: error?.message 
+                      });
+                    }
+                  );
+                }}
+              >
+                Book Demo
+              </motion.button>
             </>
           )}
         </div>

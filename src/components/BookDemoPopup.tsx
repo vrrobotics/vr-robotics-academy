@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Rocket, CheckCircle } from 'lucide-react';
 import { trackEvent } from '@/components/AnalyticsTracker';
+import RazorpayService from '@/services/razorpayService';
 
 export default function BookDemoPopup() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Show popup when user scrolls to middle of page
   useEffect(() => {
@@ -28,6 +30,33 @@ export default function BookDemoPopup() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasShownPopup]);
+
+  const handlePaymentClick = async () => {
+    setIsProcessing(true);
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('✓ Payment successful:', response);
+          setShowPopup(false);
+          trackEvent('Popup Demo Booking Payment Success', { 
+            source: 'scroll_popup',
+            paymentId: response.razorpay_payment_id 
+          });
+        },
+        (error) => {
+          console.error('✗ Payment failed:', error);
+          trackEvent('Popup Demo Booking Payment Failed', { 
+            source: 'scroll_popup',
+            error: error?.message 
+          });
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating payment:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -78,7 +107,7 @@ export default function BookDemoPopup() {
               </h3>
               
               <div className="mb-4">
-                <p className="font-heading text-3xl text-secondary mb-2">₹49</p>
+                <p className="font-heading text-3xl text-secondary mb-2">$1</p>
                 <p className="font-paragraph text-base text-foreground/80">
                   Limited Time Demo Class Offer!
                 </p>
@@ -91,7 +120,7 @@ export default function BookDemoPopup() {
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-2 text-left">
                   <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
-                  <span className="font-paragraph text-sm text-foreground/90">60-minute interactive demo - Only ₹49</span>
+                  <span className="font-paragraph text-sm text-foreground/90">60-minute interactive demo - Only $1</span>
                 </div>
                 <div className="flex items-center gap-2 text-left">
                   <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
@@ -103,22 +132,18 @@ export default function BookDemoPopup() {
                 </div>
               </div>
 
-              <Link to="/demo-booking">
-                <motion.button
-                  className="w-full bg-secondary text-secondary-foreground font-heading font-semibold px-6 py-3 rounded-lg text-base"
-                  style={{
-                    boxShadow: '0 0 20px rgba(255, 179, 102, 0.4), 0 0 40px rgba(255, 179, 102, 0.2)',
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    setShowPopup(false);
-                    trackEvent('Popup Demo Booking Click', { source: 'scroll_popup' });
-                  }}
-                >
-                  Book Demo Now - ₹49
-                </motion.button>
-              </Link>
+              <motion.button
+                className="w-full bg-secondary text-secondary-foreground font-heading font-semibold px-6 py-3 rounded-lg text-base disabled:opacity-50"
+                style={{
+                  boxShadow: '0 0 20px rgba(255, 179, 102, 0.4), 0 0 40px rgba(255, 179, 102, 0.2)',
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePaymentClick}
+                disabled={isProcessing}
+              >
+                {isProcessing ? 'Processing...' : 'Book Demo Now - $1'}
+              </motion.button>
 
               <button
                 onClick={() => setShowPopup(false)}

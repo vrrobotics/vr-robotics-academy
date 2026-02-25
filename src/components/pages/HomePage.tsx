@@ -17,6 +17,8 @@ import { trackEvent, trackConversion } from '@/components/AnalyticsTracker';
 import { BaseCrudService } from '@/integrations';
 import EnrollmentOnboardingPopup from '@/components/EnrollmentOnboardingPopup';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import RazorpayService from '@/services/razorpayService';
 
 type AnimatedElementProps = {
   children: React.ReactNode;
@@ -101,6 +103,24 @@ export default function HomePage() {
     setFailedImages(prev => new Set([...prev, moduleName]));
     // Set background gradient fallback
     target.style.display = 'none';
+  };
+
+  // Razorpay Payment Handler - $1 Demo Booking
+  const handleBookDemoPayment = async () => {
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('✓ Demo payment successful:', response);
+          trackConversion('demo_booking_payment_success', { paymentId: response.razorpay_payment_id });
+        },
+        (error) => {
+          console.error('✗ Demo payment failed:', error);
+          trackEvent('demo_booking_payment_failed', { error: error?.message });
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating payment:', error);
+    }
   };
 
   // Fetch featured courses on mount
@@ -289,19 +309,18 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <Link to="/demo-booking">
-                  <motion.button
+                <motion.button
                     className="w-full bg-secondary text-secondary-foreground font-heading font-semibold px-8 py-4 rounded-lg neon-glow-secondary text-lg"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => {
                       setShowScrollPopup(false);
+                      handleBookDemoPayment();
                       trackEvent('Popup Demo Booking Click', { source: 'timed_popup' });
                     }}
                   >
-                    Book Demo Now - ₹49
+                    Book Demo Now - ₹99
                   </motion.button>
-                </Link>
 
                 <button
                   onClick={() => setShowScrollPopup(false)}
@@ -486,6 +505,126 @@ export default function HomePage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
               >
+                {/* Outer Rotating Liquid Glow - Full Screen */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center -z-10"
+                  animate={{
+                    rotate: [0, 360],
+                  }}
+                  transition={{
+                    duration: 20,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <div 
+                    className="absolute blur-3xl opacity-70"
+                    style={{
+                      width: '1000px',
+                      height: '800px',
+                      background: 'radial-gradient(ellipse 40% 60% at 30% 40%, rgba(255, 179, 102, 0.8), transparent 70%)',
+                      filter: 'blur(60px)',
+                    }}
+                  />
+                </motion.div>
+
+                {/* Primary Pulsing Liquid Glow - Full Screen */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center -z-10"
+                  animate={{
+                    opacity: [0.5, 1, 0.5],
+                    scale: [0.8, 1.2, 0.8],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <div 
+                    className="absolute blur-3xl"
+                    style={{
+                      width: '900px',
+                      height: '900px',
+                      background: 'radial-gradient(ellipse 50% 70% at 50% 30%, rgba(255, 140, 66, 0.9), transparent 60%)',
+                      filter: 'blur(70px)',
+                    }}
+                  />
+                </motion.div>
+
+                {/* Secondary Rotating Liquid Glow - Full Screen */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center -z-10"
+                  animate={{
+                    rotate: [360, 0],
+                    opacity: [0.4, 0.8, 0.4],
+                  }}
+                  transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <div 
+                    className="absolute blur-2xl"
+                    style={{
+                      width: '950px',
+                      height: '820px',
+                      background: 'radial-gradient(ellipse 55% 65% at 60% 50%, rgba(255, 179, 102, 0.75), transparent 65%)',
+                      filter: 'blur(65px)',
+                    }}
+                  />
+                </motion.div>
+
+                {/* Tertiary Morphing Liquid Glow - Full Screen */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center -z-10"
+                  animate={{
+                    scale: [0.9, 1.3, 0.9],
+                    opacity: [0.3, 0.8, 0.3],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  }}
+                >
+                  <div 
+                    className="absolute blur-3xl"
+                    style={{
+                      width: '880px',
+                      height: '720px',
+                      background: 'radial-gradient(ellipse 45% 75% at 45% 60%, rgba(255, 140, 66, 0.85), transparent 55%)',
+                      filter: 'blur(55px)',
+                    }}
+                  />
+                </motion.div>
+
+                {/* Center Bright Liquid Glow - Full Screen */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center -z-10"
+                  animate={{
+                    opacity: [0.6, 1, 0.6],
+                    scale: [0.95, 1.1, 0.95],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <div 
+                    className="absolute blur-3xl"
+                    style={{
+                      width: '750px',
+                      height: '750px',
+                      background: 'radial-gradient(ellipse 50% 60% at 50% 45%, rgba(255, 179, 102, 1), transparent 50%)',
+                      filter: 'blur(60px)',
+                    }}
+                  />
+                </motion.div>
+
                 <spline-viewer 
                   url="https://prod.spline.design/FNanjG-W99jZaCiJ/scene.splinecode"
                   style={{
@@ -493,7 +632,8 @@ export default function HomePage() {
                     width: '100%',
                     height: '100%',
                     borderRadius: '20px',
-                    transform: 'scale(1.5)'
+                    transform: 'scale(1.5)',
+                    zIndex: 10,
                   }}
                 />
               </motion.div>
@@ -527,7 +667,7 @@ export default function HomePage() {
                     className="mb-4"
                   >
                     <h1 
-                      className="font-heading text-2xl sm:text-3xl md:text-5xl lg:text-[3.5rem] bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-[1.2]"
+                      className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-5xl text-secondary leading-[1.2]"
                     >
                       Learn Robotics & AI Faster — With Clear Guidance and Real Projects.
                     </h1>
@@ -749,101 +889,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Featured Courses Section */}
-        <section className="relative z-10 py-16 sm:py-24 md:py-40 bg-background overflow-hidden">
-          <div className="max-w-[100rem] mx-auto px-6 sm:px-8 md:px-12">
-            <div className="text-center mb-16 sm:mb-20">
-              <PremiumScrollAnimation variant="fadeInDown">
-                <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-primary text-glow-primary mb-4 sm:mb-6 px-4">
-                  Featured Courses
-                </h2>
-                <p className="font-paragraph text-base sm:text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto px-4">
-                  Start your robotics journey with our most popular and impactful courses
-                </p>
-              </PremiumScrollAnimation>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {loading ? (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-foreground/60 font-paragraph text-sm sm:text-base">Loading featured courses...</p>
-                </div>
-              ) : featuredCourses.length > 0 ? (
-                featuredCourses.map((course, index) => (
-                  <PremiumScrollAnimation key={course._id} variant="fadeInUp" delay={index * 0.1}>
-                    <motion.div
-                      className="group relative rounded-2xl overflow-hidden glass-pane h-full flex flex-col"
-                      whileHover={{ y: -8 }}
-                      transition={{ duration: 0.3 }}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                    >
-                      {/* Course Image */}
-                      <div className="relative overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20" style={{ height: '125px' }}>
-                        <motion.div
-                          className="absolute inset-0"
-                          animate={{ scale: [1, 1.05, 1] }}
-                          transition={{ duration: 3, repeat: Infinity, delay: index * 0.2 }}
-                        >
-                          <Image
-                            src={course.courseImage || 'https://static.wixstatic.com/media/39909b_5e4f7e5af96144b3b098fa78941c24ed~mv2.png?originWidth=384&originHeight=192'}
-                            alt={course.courseName}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            width={400}
-                          />
-                        </motion.div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
-                      </div>
-
-                      {/* Course Content */}
-                      <div className="flex-grow p-5 sm:p-6 flex flex-col">
-                        <h3 className="font-heading text-lg sm:text-xl md:text-2xl text-foreground mb-2 sm:mb-3 line-clamp-2">
-                          {course.courseName}
-                        </h3>
-                        
-                        <p className="font-paragraph text-sm sm:text-base text-foreground/70 mb-4 sm:mb-6 line-clamp-2 flex-grow">
-                          {course.courseDescription}
-                        </p>
-
-                        {/* CTA Button */}
-                        <Link to="/demo-booking" className="w-full">
-                          <motion.button
-                            className="w-full bg-primary text-primary-foreground font-heading font-semibold px-6 py-3 rounded-lg flex items-center justify-center gap-2 group/btn text-sm sm:text-base"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            animate={{ boxShadow: ['0 0 10px rgba(255, 140, 66, 0.3)', '0 0 20px rgba(255, 140, 66, 0.5)', '0 0 10px rgba(255, 140, 66, 0.3)'] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                          >
-                            Enroll Now
-                            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                          </motion.button>
-                        </Link>
-                      </div>
-                    </motion.div>
-                  </PremiumScrollAnimation>
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-foreground/60 font-paragraph text-sm sm:text-base">No featured courses available yet</p>
-                </div>
-              )}
-            </div>
-
-            {/* View All Courses Link */}
-            <div className="text-center mt-12 sm:mt-16 px-4">
-              <Link to="/curriculum">
-                <motion.button
-                  className="font-heading font-semibold text-primary text-base sm:text-lg inline-flex items-center gap-2 hover:gap-4 transition-all"
-                  whileHover={{ x: 4 }}
-                >
-                  View All Courses <ArrowRight className="w-5 h-5" />
-                </motion.button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {/* CTA Section */}
         <section className="relative z-10 py-16 sm:py-24 md:py-40 bg-black overflow-hidden">
           <div className="absolute inset-0 opacity-10">
@@ -977,29 +1022,8 @@ export default function HomePage() {
             </PremiumScrollAnimation>
           </div>
         </section>
-
-        {/* Contact Section */}
-        <section className="relative z-10 py-16 px-4 md:px-8 bg-background overflow-hidden">
-          <div className="max-w-7xl mx-auto text-center">
-            <PremiumScrollAnimation variant="fadeInUp">
-              <h2 className="font-heading text-4xl md:text-6xl mb-6 text-foreground">
-                Questions? We're Here to Help
-              </h2>
-              <p className="font-paragraph text-xl mb-8 text-foreground/80 max-w-3xl mx-auto">
-                Our dedicated team is ready to answer any questions and help you start your robotics adventure.
-              </p>
-              <Link to="/contact">
-                <motion.button
-                  className="bg-transparent text-secondary border-2 border-secondary font-heading font-semibold px-10 py-4 rounded-lg text-lg"
-                  whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 179, 102, 0.1)' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Get in Touch
-                </motion.button>
-              </Link>
-            </PremiumScrollAnimation>
-          </div>
-        </section>
+        
+        <Footer />
       </div>
     </PageTransition>
     </>

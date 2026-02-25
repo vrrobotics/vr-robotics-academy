@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, ArrowRight } from 'lucide-react';
+import { Mail, Phone, Facebook, Twitter, Instagram, Linkedin, Zap } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 
 export default function Footer() {
@@ -18,10 +18,11 @@ export default function Footer() {
     { name: 'Admission Process', path: '/admission-process' }
   ];
 
-  const cta = [
+  const support = [
+    { name: 'Contact Us', path: '/contact' },
     { name: 'Book Free Demo', path: '/demo-booking' },
-    { name: 'View Pricing', path: '/program-fees' },
-    { name: 'Contact Us', path: '/contact' }
+    { name: 'FAQ', path: '#' },
+    { name: 'Support Center', path: '#' }
   ];
 
   const socialLinks = [
@@ -31,24 +32,11 @@ export default function Footer() {
     { icon: Linkedin, url: '#', label: 'LinkedIn' }
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
-  };
+  const footerLinks = [
+    { name: 'Privacy Policy', path: '#' },
+    { name: 'Terms of Service', path: '#' },
+    { name: 'Cookie Policy', path: '#' }
+  ];
 
   return (
     <footer className="relative bg-background mt-16 sm:mt-20 md:mt-24 overflow-hidden">
@@ -66,74 +54,192 @@ export default function Footer() {
         }}
       />
 
-      {/* Circuit Background */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(90deg, rgba(255, 140, 66, 0.1) 1px, transparent 1px),
-            linear-gradient(rgba(255, 140, 66, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px'
-        }} />
-      </div>
-
-      <div className="relative max-w-[100rem] mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16">
-        <motion.div
-          className="flex justify-center mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {/* Brand Section - Centered */}
-          <motion.div variants={itemVariants} className="text-center max-w-md">
+      <div className="relative max-w-[100rem] mx-auto px-6 sm:px-8 md:px-12 py-16 sm:py-20 md:py-24">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          {/* Brand Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
             <Link to="/">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="mb-6 flex justify-center"
+                className="mb-6 flex items-center gap-3"
               >
                 <Image
                   src="https://res.cloudinary.com/dicfqwlfq/image/upload/v1764505259/VR_Robotics_Logo_upscaled_1_rrrrn8.png"
                   alt="VR Robotics Academy Logo"
-                  width={120}
+                  width={60}
                   className="h-auto"
                 />
+                <div>
+                  <p className="font-heading font-bold text-foreground">VR Robotics</p>
+                  <p className="font-paragraph text-xs text-foreground/60">Live in future</p>
+                </div>
               </motion.div>
             </Link>
-            <p className="font-paragraph text-sm md:text-base text-foreground/70 mb-6">
+            <p className="font-paragraph text-sm text-foreground/70 mb-6 leading-relaxed">
               Empowering the next generation of innovators through robotics, coding, and VR education.
             </p>
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-3">
               {socialLinks.map((social, index) => (
                 <motion.a
                   key={index}
                   href={social.url}
                   aria-label={social.label}
-                  className="p-2 rounded-lg bg-foreground/5 border border-foreground/10"
-                  whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.1)', y: -2 }}
+                  className="p-2 rounded-lg bg-foreground/5 border border-foreground/10 hover:border-secondary/30"
+                  whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 140, 66, 0.1)' }}
                   whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
                 >
-                  <social.icon className="w-5 h-5 text-foreground/70" />
+                  <social.icon className="w-4 h-4 text-foreground/70" />
                 </motion.a>
               ))}
             </div>
           </motion.div>
-        </motion.div>
 
-        {/* Bottom Bar */}
+          {/* Quick Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="font-heading text-lg font-bold text-foreground mb-6 flex items-center gap-2">
+              <Zap className="w-5 h-5 text-secondary" />
+              Quick Links
+            </h3>
+            <ul className="space-y-3">
+              {quickLinks.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.path}
+                    className="font-paragraph text-sm text-foreground/70 hover:text-secondary transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Resources */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="font-heading text-lg font-bold text-foreground mb-6">Resources</h3>
+            <ul className="space-y-3">
+              {resources.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.path}
+                    className="font-paragraph text-sm text-foreground/70 hover:text-secondary transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Support */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="font-heading text-lg font-bold text-foreground mb-6">Support</h3>
+            <ul className="space-y-3">
+              {support.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.path}
+                    className="font-paragraph text-sm text-foreground/70 hover:text-secondary transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+
+        {/* Contact Info Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 py-12 border-y border-foreground/10">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="flex items-start gap-4"
+          >
+            <div className="p-3 rounded-lg bg-secondary/10 border border-secondary/20 mt-1">
+              <Mail className="w-5 h-5 text-secondary" />
+            </div>
+            <div>
+              <p className="font-heading font-bold text-foreground mb-1">Email Us</p>
+              <p className="font-paragraph text-sm text-foreground/70">info@vrroboticsacademy.com</p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="flex items-start gap-4"
+          >
+            <div className="p-3 rounded-lg bg-secondary/10 border border-secondary/20 mt-1">
+              <Phone className="w-5 h-5 text-secondary" />
+            </div>
+            <div>
+              <p className="font-heading font-bold text-foreground mb-1">Call Us</p>
+              <p className="font-paragraph text-sm text-foreground/70">+1 (234) 567-890</p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Bottom Footer */}
         <motion.div
-          className="pt-8"
+          className="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-            <div className="font-paragraph text-xs sm:text-sm md:text-base text-foreground/60">
-              © {new Date().getFullYear()} VR Robotics Academy. All rights reserved.
-            </div>
+          <p className="font-paragraph text-xs sm:text-sm text-foreground/60">
+            © {new Date().getFullYear()} VR Robotics Academy. All rights reserved.
+          </p>
+          <div className="flex flex-wrap justify-center md:justify-end gap-6">
+            {footerLinks.map((link, index) => (
+              <Link
+                key={index}
+                to={link.path}
+                className="font-paragraph text-xs sm:text-sm text-foreground/60 hover:text-secondary transition-colors duration-200"
+              >
+                {link.name}
+              </Link>
+            ))}
           </div>
+        </motion.div>
+
+        {/* Made with love */}
+        <motion.div
+          className="text-center mt-8 pt-8 border-t border-foreground/10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <p className="font-paragraph text-xs sm:text-sm text-foreground/60">
+            Made with <span className="text-secondary">❤</span> by the VR Robotics Academy Team
+          </p>
         </motion.div>
       </div>
     </footer>
