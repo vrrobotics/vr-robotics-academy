@@ -37,7 +37,7 @@ export default function TeacherProfilePage() {
   const [profileData, setProfileData] = useState<ProfileData>({
     fullName: user?.fullName || 'Sarah Williams',
     email: user?.email || 'sarah.williams@example.com',
-    phone: '+1 (555) 123-4567',
+    phone: '+91 7483430092',
     department: 'STEM Education',
     bio: 'Passionate educator with 8+ years of experience in robotics and VR education.',
     profilePhoto: user?.profilePicture || null

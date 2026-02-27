@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Image } from '@/components/ui/image';
 import { Lightbulb, Bot, Code, Glasses, Puzzle, Gamepad2 } from 'lucide-react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import BookDemoPopup from '@/components/BookDemoPopup';
 
 export default function WhatKidsLearnPage() {
@@ -420,6 +421,7 @@ export default function WhatKidsLearnPage() {
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

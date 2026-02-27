@@ -78,7 +78,7 @@ export default function TeacherHelpSupportPage() {
             <p className="font-paragraph text-foreground/70 mb-4">
               Call us during business hours (9 AM - 6 PM)
             </p>
-            <p className="font-paragraph text-primary font-medium">+1 (555) 123-4567</p>
+            <p className="font-paragraph text-primary font-medium">+91 7483430092</p>
           </motion.div>
 
           <motion.div

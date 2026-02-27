@@ -207,7 +207,7 @@ export default function UserManagementModal({
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleChange}
-              placeholder="+1 (555) 000-0000"
+              placeholder="+91 7483430092"
               className="bg-primary-foreground border-primary/20 text-white placeholder:text-gray-500"
             />
           </div>

@@ -3,12 +3,29 @@ import { useRef, useEffect, useState } from 'react';
 import { RotateCw, ZoomIn, ZoomOut, Move, Info } from 'lucide-react';
 import * as THREE from 'three';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import RazorpayService from '@/services/razorpayService';
 
 export default function Interactive3DRobotPage() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(5);
   const [showInfo, setShowInfo] = useState(true);
+
+  const handleBookDemoPayment = async () => {
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('Demo payment successful:', response);
+        },
+        (error) => {
+          console.error('Demo payment failed:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating demo payment:', error);
+    }
+  };
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -379,14 +396,15 @@ export default function Interactive3DRobotPage() {
               className="bg-primary text-primary-foreground font-heading font-semibold px-8 py-4 rounded-lg"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/demo-booking'}
+              onClick={handleBookDemoPayment}
             >
-              Book Free Demo
+              Book Demo
             </motion.button>
           </div>
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

@@ -6,6 +6,7 @@ import { CurriculumModules } from '@/entities';
 import { BookOpen, Clock, Target, ArrowRight, Sparkles, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function Grades1to3CurriculumPage() {
   const [modules, setModules] = useState<CurriculumModules[]>([]);
@@ -459,7 +460,7 @@ export default function Grades1to3CurriculumPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              Book a free demo, explore our admission process, or view pricing options to get started with our Grades 1-3 curriculum!
+              Book a demo, explore our admission process, or view pricing options to get started with our Grades 1-3 curriculum!
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -474,7 +475,7 @@ export default function Grades1to3CurriculumPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Book Free Demo
+                  Book Demo
                 </motion.button>
               </Link>
               <Link to="/admission-process">
@@ -500,6 +501,7 @@ export default function Grades1to3CurriculumPage() {
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

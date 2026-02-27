@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import RazorpayService from '@/services/razorpayService';
 
 interface DemoPopupProps {
   enabledPages?: string[];
@@ -9,7 +10,6 @@ interface DemoPopupProps {
 
 export default function DemoPopup({ enabledPages = [] }: DemoPopupProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -26,9 +26,20 @@ export default function DemoPopup({ enabledPages = [] }: DemoPopupProps) {
     return () => clearTimeout(timer);
   }, [location.pathname, enabledPages]);
 
-  const handleBookDemo = () => {
+  const handleBookDemo = async () => {
     setIsOpen(false);
-    navigate('/demo-booking');
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('Demo payment successful:', response);
+        },
+        (error) => {
+          console.error('Demo payment failed:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating demo payment:', error);
+    }
   };
 
   return (
@@ -50,7 +61,7 @@ export default function DemoPopup({ enabledPages = [] }: DemoPopupProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md mx-4"
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-sm mx-4"
           >
             <div
               className="relative rounded-3xl p-6 sm:p-8 overflow-hidden"
@@ -101,7 +112,7 @@ export default function DemoPopup({ enabledPages = [] }: DemoPopupProps) {
 
                 {/* Description */}
                 <p className="font-paragraph text-sm sm:text-base text-foreground/80 mb-6 leading-relaxed">
-                  Book a free demo session and experience our robotics program firsthand. No commitment required!
+                  Book a demo and experience our robotics program firsthand. No commitment required!
                 </p>
 
                 {/* Buttons */}

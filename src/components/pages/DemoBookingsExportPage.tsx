@@ -5,6 +5,7 @@ import { BaseCrudService } from '@/integrations';
 import { DemoSessions } from '@/entities';
 import { ExcelExportService } from '@/services/excelExportService';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function DemoBookingsExportPage() {
   const [demoBookings, setDemoBookings] = useState<DemoSessions[]>([]);
@@ -447,6 +448,7 @@ export default function DemoBookingsExportPage() {
           )}
         </div>
       </div>
+    <Footer />
     </>
   );
 }

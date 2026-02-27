@@ -1,16 +1,19 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Calendar, Clock, Users, CheckCircle, Award, Lightbulb, Heart } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { BaseCrudService } from '@/integrations';
 import { DemoSessions, TeacherApprovals } from '@/entities';
 import { EmailService } from '@/services/emailService';
 import { GoogleSheetsService } from '@/services/googleSheetsService';
+import PaymentWorkflowService from '@/services/paymentWorkflowService';
+import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 
 export default function DemoBookingPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     parentName: '',
     email: '',
@@ -28,11 +31,25 @@ export default function DemoBookingPage() {
   const [error, setError] = useState<string | null>(null);
   const [teachers, setTeachers] = useState<TeacherApprovals[]>([]);
   const [isLoadingTeachers, setIsLoadingTeachers] = useState(true);
+  
+  // ========== PAYMENT TRACKING ==========
+  const [paymentId, setPaymentId] = useState<string | null>(null);
+  const [isPaymentVerified, setIsPaymentVerified] = useState(false);
 
   // ============================================================================
-  // LOAD APPROVED TEACHERS FOR ASSIGNMENT
+  // LOAD APPROVED TEACHERS FOR ASSIGNMENT & CHECK PAYMENT STATUS
   // ============================================================================
   useEffect(() => {
+    // Check for payment parameters from URL
+    const paymentFromUrl = searchParams.get('payment_id');
+    const paymentVerified = searchParams.get('payment_verified') === 'true';
+    
+    if (paymentFromUrl && paymentVerified) {
+      console.log('[DemoBooking] ✓ Payment found in URL:', paymentFromUrl);
+      setPaymentId(paymentFromUrl);
+      setIsPaymentVerified(true);
+    }
+
     const loadTeachers = async () => {
       try {
         console.log('[DemoBooking] Loading approved teachers...');
@@ -48,7 +65,7 @@ export default function DemoBookingPage() {
     };
 
     loadTeachers();
-  }, []);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,30 +130,39 @@ export default function DemoBookingPage() {
       }
 
       // ✅ Append booking to Google Sheet for real-time tracking
-      console.log('[DemoBooking] Appending booking to Google Sheet...');
+      // ⚠️  IMPORTANT: Only update Google Sheets if payment has been verified
+      console.log('[DemoBooking] Checking payment status before Google Sheets update...');
       let sheetsSuccess = false;
-      try {
-        const googleSheetsResult = await GoogleSheetsService.appendDemoBooking({
-          parentName: formData.parentName,
-          parentEmail: formData.email,
-          parentPhone: formData.phone,
-          childName: formData.childName,
-          childAge: formData.childAge,
-          preferredDate: formData.preferredDate,
-          preferredTime: formData.preferredTime,
-          interests: formData.interests,
-          message: formData.message,
-          bookingId: demoSessionData.id
-        });
-        
-        if (googleSheetsResult.success) {
-          console.log('[DemoBooking] ✓ Booking appended to Google Sheet');
-          sheetsSuccess = true;
-        } else {
-          console.warn('[DemoBooking] ⚠ Google Sheets update failed:', googleSheetsResult.error);
+      if (isPaymentVerified && paymentId) {
+        console.log('[DemoBooking] ✓ Payment verified, appending booking with payment info to Google Sheet...');
+        try {
+          const googleSheetsResult = await GoogleSheetsService.appendDemoBooking({
+            parentName: formData.parentName,
+            parentEmail: formData.email,
+            parentPhone: formData.phone,
+            childName: formData.childName,
+            childAge: formData.childAge,
+            preferredDate: formData.preferredDate,
+            preferredTime: formData.preferredTime,
+            interests: formData.interests,
+            message: formData.message,
+            bookingId: demoSessionData.id,
+            paymentId: paymentId,
+            paymentStatus: 'paid'
+          });
+          
+          if (googleSheetsResult.success) {
+            console.log('[DemoBooking] ✓ Booking appended to Google Sheet with PAYMENT STATUS: PAID');
+            sheetsSuccess = true;
+          } else {
+            console.warn('[DemoBooking] ⚠ Google Sheets update failed:', googleSheetsResult.error);
+          }
+        } catch (sheetsErr) {
+          console.warn('[DemoBooking] ⚠ Google Sheets operation failed:', sheetsErr);
         }
-      } catch (sheetsErr) {
-        console.warn('[DemoBooking] ⚠ Google Sheets operation failed:', sheetsErr);
+      } else {
+        console.warn('[DemoBooking] ✗ No payment verification - SKIPPING Google Sheets update');
+        console.log('[DemoBooking] Payment Status: Verified=' + isPaymentVerified + ', PaymentID=' + paymentId);
       }
 
       // If at least one method succeeded (ideally email or sheets), show success
@@ -254,7 +280,7 @@ export default function DemoBookingPage() {
               textShadow: '0 0 30px rgba(216, 255, 145, 0.4)'
             }}
           >
-            Book Your Free Demo
+            Book Your Demo
           </motion.h1>
           <motion.p
             className="font-paragraph text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/90 max-w-4xl mx-auto w-[90%] leading-relaxed"
@@ -568,7 +594,7 @@ export default function DemoBookingPage() {
                     onChange={handleChange}
                     required
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground font-paragraph text-sm focus:outline-none focus:border-primary"
-                    placeholder="+1 (555) 000-0000"
+                    placeholder="+91 7483430092"
                   />
                 </div>
                 <div>
@@ -672,12 +698,13 @@ export default function DemoBookingPage() {
                 whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                 whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               >
-                {isSubmitting ? 'Booking...' : 'Book Free Demo Session'}
+                {isSubmitting ? 'Booking...' : 'Book Demo'}
               </motion.button>
             </form>
           </motion.div>
         </div>
       </section>
+      <Footer />
       </div>
     </>
   );

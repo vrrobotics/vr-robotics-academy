@@ -10,6 +10,7 @@ import Module5DetailsPage from './Module5DetailsPage';
 import Module6DetailsPage from './Module6DetailsPage';
 import Module7DetailsPage from './Module7DetailsPage';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function ModuleDetailsPage() {
   const { moduleId } = useParams<{ moduleId: string }>();
@@ -620,6 +621,7 @@ export default function ModuleDetailsPage() {
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

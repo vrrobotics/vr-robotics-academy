@@ -4,6 +4,7 @@ import { ArrowLeft, BookOpen, Code, Lightbulb, Zap, Target, Sparkles } from 'luc
 import { Link } from 'react-router-dom';
 import { useRef, useState, useEffect } from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 // Floating particle component for magical effect
 function FloatingParticle({ delay, duration }: { delay: number; duration: number }) {
@@ -778,6 +779,7 @@ export default function PythonProgrammingPage() {
         </motion.div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

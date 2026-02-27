@@ -19,6 +19,8 @@ export interface GoogleSheetRow {
   message: string;
   status: string;
   bookingId: string;
+  paymentId?: string;
+  paymentStatus?: 'paid' | 'unpaid';
 }
 
 export class GoogleSheetsService {
@@ -32,6 +34,9 @@ export class GoogleSheetsService {
   /**
    * Append demo booking to Google Sheet
    * Sends data to Google Apps Script which handles the write operation
+   * 
+   * NOTE: This should only be called AFTER payment is successful
+   * Payment status is automatically tracked if paymentId is provided
    */
   static async appendDemoBooking(bookingData: {
     parentName: string;
@@ -44,6 +49,8 @@ export class GoogleSheetsService {
     interests: string;
     message: string;
     bookingId: string;
+    paymentId?: string;
+    paymentStatus?: 'paid' | 'unpaid';
   }): Promise<{
     success: boolean;
     message: string;
@@ -71,11 +78,17 @@ export class GoogleSheetsService {
         preferredTime: bookingData.preferredTime,
         interests: bookingData.interests,
         message: bookingData.message,
-        status: 'scheduled',
-        bookingId: bookingData.bookingId.substring(0, 8)
+        status: bookingData.paymentStatus === 'paid' ? 'paid' : 'scheduled',
+        bookingId: bookingData.bookingId.substring(0, 8),
+        paymentId: bookingData.paymentId,
+        paymentStatus: bookingData.paymentStatus || 'unpaid'
       };
 
-      console.log('[GoogleSheets] Appending booking to sheet:', rowData);
+      console.log('[GoogleSheets] Appending booking to sheet:', {
+        ...rowData,
+        paymentStatus: bookingData.paymentStatus,
+        paymentId: bookingData.paymentId ? '✓ Present' : '✗ Not present'
+      });
 
       const response = await fetch(scriptUrl, {
         method: 'POST',

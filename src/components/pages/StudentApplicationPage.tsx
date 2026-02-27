@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function StudentApplicationPage() {
   const [formData, setFormData] = useState({
@@ -345,6 +346,7 @@ export default function StudentApplicationPage() {
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

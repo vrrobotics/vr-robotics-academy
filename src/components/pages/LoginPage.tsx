@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import { Mail, Lock, User, AlertCircle, CheckCircle, Upload, X, FileText, Loader, Clock } from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Image } from '@/components/ui/image';
+import Footer from '@/components/Footer';
 import { teacherRegistrationService } from '@/services/teacherRegistrationService';
 import { EmailService } from '@/services/emailService';
 import { TeacherApprovalService } from '@/services/teacherApprovalService';
@@ -697,7 +698,7 @@ export default function LoginPage() {
                 type="tel"
                 value={studentSignupData.phoneNumber}
                 onChange={(e) => setStudentSignupData({ ...studentSignupData, phoneNumber: e.target.value })}
-                placeholder="+1 (555) 123-4567"
+                placeholder="+91 7483430092"
                 className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground font-paragraph focus:outline-none focus:border-primary transition-colors"
               />
             </div>
@@ -882,7 +883,7 @@ export default function LoginPage() {
                 type="tel"
                 value={teacherSignupData.phoneNumber}
                 onChange={(e) => setTeacherSignupData({ ...teacherSignupData, phoneNumber: e.target.value })}
-                placeholder="+1 (555) 123-4567"
+                placeholder="+91 7483430092"
                 className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground font-paragraph focus:outline-none focus:border-primary transition-colors"
               />
             </div>
@@ -1253,6 +1254,7 @@ export default function LoginPage() {
         </motion.div>
       )}
     </div>
+    <Footer />
     </>
   );
 }

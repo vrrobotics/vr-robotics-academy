@@ -10,6 +10,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useRoleStore } from '@/stores/roleStore';
 import { Lock, Mail, BookOpen, AlertCircle, CheckCircle, Loader } from 'lucide-react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function TeacherLoginPage() {
   const navigate = useNavigate();
@@ -290,6 +291,7 @@ export default function TeacherLoginPage() {
         </motion.div>
       </div>
       </div>
+    <Footer />
     </>
   );
 }

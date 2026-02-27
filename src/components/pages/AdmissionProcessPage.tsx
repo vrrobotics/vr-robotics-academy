@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Image } from '@/components/ui/image';
 import { ArrowRight, CheckCircle, Clock, Users, BookOpen, Trophy, Zap } from 'lucide-react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { getFallbackImage, getTertiaryFallbackImage } from '@/services/imageGenerationService';
+import RazorpayService from '@/services/razorpayService';
 
 // Professional SVG Illustrations for each step
 const ApplicationIllustration = () => (
@@ -127,6 +129,21 @@ const WelcomeIllustration = () => (
 
 export default function AdmissionProcessPage() {
   const navigate = useNavigate();
+
+  const handleBookDemoPayment = async () => {
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('Demo payment successful:', response);
+        },
+        (error) => {
+          console.error('Demo payment failed:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating demo payment:', error);
+    }
+  };
   // Admission steps with SVG illustrations
   const steps = [
     {
@@ -138,8 +155,8 @@ export default function AdmissionProcessPage() {
     },
     {
       stepNumber: 2 as const,
-      title: 'Free Demo Session',
-      description: 'Schedule a 30-minute free demo where your child can experience our VR robotics platform, meet our instructors, and ask questions.',
+      title: 'Demo Session',
+      description: 'Schedule a 30-minute demo where your child can experience our VR robotics platform, meet our instructors, and ask questions.',
       icon: '🎮',
       illustration: <DemoIllustration />
     },
@@ -490,7 +507,7 @@ export default function AdmissionProcessPage() {
               },
               {
                 q: 'Can we see a sample class before enrolling?',
-                a: 'Absolutely! Book a free demo session to experience our teaching style and platform firsthand.'
+                a: 'Absolutely! Book a demo session to experience our teaching style and platform firsthand.'
               },
               {
                 q: 'What certifications will my child get?',
@@ -540,7 +557,7 @@ export default function AdmissionProcessPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              Join thousands of students already mastering robotics, AI, and VR technology. Book a free demo today!
+              Join thousands of students already mastering robotics, AI, and VR technology. Book a demo today!
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -553,9 +570,9 @@ export default function AdmissionProcessPage() {
                 className="bg-primary text-primary-foreground font-heading font-semibold px-10 py-4 rounded-lg text-lg"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/demo-booking')}
+                onClick={handleBookDemoPayment}
               >
-                Book Free Demo
+                Book Demo
               </motion.button>
               <motion.button
                 className="bg-transparent text-secondary border-2 border-secondary font-heading font-semibold px-10 py-4 rounded-lg text-lg"
@@ -570,6 +587,7 @@ export default function AdmissionProcessPage() {
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CollaborativeGradingWorkspace from '@/components/dashboard/CollaborativeGradingWorkspace';
 import InteractiveCharts from '@/components/dashboard/InteractiveCharts';
@@ -168,6 +169,7 @@ export default function CollaborationHubPage() {
         </div>
       </div>
       </div>
+    <Footer />
     </>
   );
 }

@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense, useEffect, useRef } from "react";
 import ErrorPage from "@/components/ErrorPage";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import RazorpayService from "@/services/razorpayService";
 
 // Lazy load page components for better performance
 const HomePage = lazy(() => import("@/components/pages/HomePage").catch(() => {
@@ -110,272 +111,337 @@ const router = createBrowserRouter([
   {
     path: "about",
     element: <SuspenseWrapper><AboutPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "contact",
     element: <SuspenseWrapper><ContactPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "demo-booking",
     element: <SuspenseWrapper><DemoBookingPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "demo-bookings-export",
     element: <SuspenseWrapper><DemoBookingsExportPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "curriculum",
     element: <SuspenseWrapper><CurriculumPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admission-process",
     element: <SuspenseWrapper><AdmissionProcessPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "program-fees",
     element: <SuspenseWrapper><ProgramFeesPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "why-vr-robotics",
     element: <SuspenseWrapper><WhyVRRoboticsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "what-kids-learn",
     element: <SuspenseWrapper><WhatKidsLearnPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "how-kids-build",
     element: <SuspenseWrapper><HowKidsBuildPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "python-programming",
     element: <SuspenseWrapper><PythonProgrammingPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "interactive-3d-robot",
     element: <SuspenseWrapper><Interactive3DRobotPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "grades-1-3-curriculum",
     element: <SuspenseWrapper><Grades1to3CurriculumPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
 
   // Module Pages
   {
     path: "modules",
     element: <SuspenseWrapper><ModuleDetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-1",
     element: <SuspenseWrapper><Module1DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-2",
     element: <SuspenseWrapper><Module2DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-3",
     element: <SuspenseWrapper><Module3DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-4",
     element: <SuspenseWrapper><Module4DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-5",
     element: <SuspenseWrapper><Module5DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-6",
     element: <SuspenseWrapper><Module6DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-7",
     element: <SuspenseWrapper><Module7DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-8",
     element: <SuspenseWrapper><Module8DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "module-9",
     element: <SuspenseWrapper><Module9DetailsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
 
   // Authentication Pages
   {
     path: "login",
     element: <SuspenseWrapper><LoginPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "student-signup",
     element: <SuspenseWrapper><StudentSignupPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-login",
     element: <SuspenseWrapper><TeacherLoginPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-signup",
     element: <SuspenseWrapper><TeacherSignupPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
 
   // Student Dashboard & Pages
   {
     path: "student-application",
     element: <SuspenseWrapper><StudentApplicationPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "student-dashboard",
     element: <SuspenseWrapper><StudentDashboardPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "student-dashboard-new",
     element: <SuspenseWrapper><StudentDashboardNewPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "student-dashboard-final",
     element: <SuspenseWrapper><StudentDashboardFinalPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "student-upcoming-classes",
     element: <SuspenseWrapper><StudentUpcomingClassesPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "gamified-student-dashboard",
     element: <SuspenseWrapper><GamifiedStudentDashboard /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
 
   // Teacher Dashboard & Pages
   {
     path: "teacher-dashboard",
     element: <SuspenseWrapper><TeacherDashboardPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-profile",
     element: <SuspenseWrapper><TeacherProfilePage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-demo-management",
     element: <SuspenseWrapper><TeacherDemoManagementPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-curriculum",
     element: <SuspenseWrapper><TeacherCurriculumPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-class-management",
     element: <SuspenseWrapper><TeacherClassManagementPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-renewal",
     element: <SuspenseWrapper><TeacherRenewalPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-my-training",
     element: <SuspenseWrapper><TeacherMyTrainingPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-audit",
     element: <SuspenseWrapper><TeacherAuditPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-performance",
     element: <SuspenseWrapper><TeacherPerformancePage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-payout",
     element: <SuspenseWrapper><TeacherPayoutPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-leave-management",
     element: <SuspenseWrapper><TeacherLeaveManagementPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-others",
     element: <SuspenseWrapper><TeacherOthersPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-help-support",
     element: <SuspenseWrapper><TeacherHelpSupportPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-upcoming-classes",
     element: <SuspenseWrapper><TeacherUpcomingClassesPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-tools",
     element: <SuspenseWrapper><TeacherToolsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "teacher-approval",
     element: <SuspenseWrapper><TeacherApprovalPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
 
   // Admin Dashboard & Pages
   {
     path: "admin-dashboard",
     element: <SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-dashboard-new",
     element: <SuspenseWrapper><AdminDashboardNewPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-panel",
     element: <SuspenseWrapper><AdminPanelPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-analytics",
     element: <SuspenseWrapper><AdminAnalyticsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-add-courses",
     element: <SuspenseWrapper><AdminAddCoursesPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-featured-courses",
     element: <SuspenseWrapper><AdminFeaturedCoursesPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-new-students",
     element: <SuspenseWrapper><AdminNewStudentsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-new-teachers",
     element: <SuspenseWrapper><AdminNewTeachersPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-student-approvals",
     element: <SuspenseWrapper><AdminStudentApprovalsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-upcoming-classes",
     element: <SuspenseWrapper><AdminUpcomingClassesPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "admin-notifications",
     element: <SuspenseWrapper><AdminNotificationsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "management-dashboard",
     element: <SuspenseWrapper><ManagementDashboardPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "advanced-analytics",
     element: <SuspenseWrapper><AdvancedAnalyticsPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "advanced-grading",
     element: <SuspenseWrapper><AdvancedGradingPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "collaboration-hub",
     element: <SuspenseWrapper><CollaborationHubPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "certificates",
     element: <SuspenseWrapper><CertificatesPage /></SuspenseWrapper>,
+    errorElement: <ErrorPage />,
   },
 ], {
   basename: '/vr-robotics-academy'
@@ -384,6 +450,27 @@ const router = createBrowserRouter([
 export default function AppRouter() {
   console.log("[Router] AppRouter mounted");
   const lastPathRef = useRef<string | null>(null);
+  const isBookDemoProcessingRef = useRef(false);
+
+  const openBookDemoCheckout = async () => {
+    if (isBookDemoProcessingRef.current) return;
+    isBookDemoProcessingRef.current = true;
+
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log("Demo payment successful:", response);
+        },
+        (error) => {
+          console.error("Demo payment failed:", error);
+        }
+      );
+    } catch (error) {
+      console.error("Error opening Razorpay checkout:", error);
+    } finally {
+      isBookDemoProcessingRef.current = false;
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = router.subscribe((state) => {
@@ -394,6 +481,37 @@ export default function AppRouter() {
       }
     });
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const handleBookDemoLinks = (event: MouseEvent) => {
+      if (event.defaultPrevented) return;
+      if (event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+
+      const anchor = target.closest("a[href]") as HTMLAnchorElement | null;
+      if (!anchor) return;
+      if (anchor.target === "_blank" || anchor.hasAttribute("download")) return;
+
+      const href = anchor.getAttribute("href");
+      if (!href) return;
+
+      const isDemoBookingLink =
+        href === "/demo-booking" ||
+        href.endsWith("/demo-booking") ||
+        href.startsWith("/demo-booking?");
+
+      if (!isDemoBookingLink) return;
+
+      event.preventDefault();
+      void openBookDemoCheckout();
+    };
+
+    document.addEventListener("click", handleBookDemoLinks, true);
+    return () => document.removeEventListener("click", handleBookDemoLinks, true);
   }, []);
 
   return <RouterProvider router={router} />;

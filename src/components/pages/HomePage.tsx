@@ -66,7 +66,7 @@ const curriculumModules = [
   { name: "IoT & Smart Technology", description: "Connect devices to the internet and build smart home systems", image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=400&h=300&fit=crop&q=80" },
   { name: "Interactive Game Development", description: "Create immersive games with professional tools and frameworks", image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop&q=80" },
   { name: "Web Builder Fundamentals", description: "Design and code modern, interactive websites from scratch", image: "https://images.unsplash.com/photo-1547658719-da2b51169166?w=400&h=300&fit=crop&q=80" },
-  { name: "Electronics & Circuit Design", description: "Master electronic components and advanced circuit engineering", image: "https://images.unsplash.com/photo-1581092162562-40aa08e78837?w=400&h=300&fit=crop&q=80" },
+  { name: "Electronics & Circuit Design", description: "Master electronic components and advanced circuit engineering", image: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop&q=80" },
   { name: "Innovation Challenge", description: "Compete in robotics challenges and showcase your skills", image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=300&fit=crop&q=80" },
   { name: "Final Grand Project", description: "Apply all your knowledge in a comprehensive capstone project", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop&q=80" }
 ];
@@ -256,15 +256,15 @@ export default function HomePage() {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.8, y: 50, opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="glass-pane p-8 rounded-2xl max-w-lg w-full relative"
+              className="glass-pane p-5 rounded-2xl max-w-sm w-full relative"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
               <button
                 onClick={() => setShowScrollPopup(false)}
-                className="absolute top-4 right-4 text-foreground/60 hover:text-foreground transition-colors"
+                className="absolute top-3 right-3 text-foreground/60 hover:text-foreground transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -274,43 +274,43 @@ export default function HomePage() {
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
-                  className="inline-block mb-4"
+                  className="inline-block mb-3"
                 >
-                  <Rocket className="w-16 h-16 text-secondary mx-auto" />
+                  <Rocket className="w-12 h-12 text-secondary mx-auto" />
                 </motion.div>
                 
-                <h3 className="font-heading text-3xl text-secondary mb-4">
+                <h3 className="font-heading text-2xl text-secondary mb-3">
                   Ready to Start Your Journey? 🚀
                 </h3>
                 
-                <div className="mb-4">
-                  <p className="font-heading text-5xl text-secondary mb-2">₹49</p>
-                  <p className="font-paragraph text-lg text-foreground/80">
+                <div className="mb-3">
+                  <p className="font-heading text-4xl text-secondary mb-1">$1</p>
+                  <p className="font-paragraph text-sm text-foreground/80">
                     Limited Time Demo Class Offer!
                   </p>
                 </div>
 
-                <p className="font-paragraph text-base text-foreground/80 mb-6">
+                <p className="font-paragraph text-xs text-foreground/80 mb-4">
                   Book your interactive 60-minute robotics demo class and experience hands-on learning with VR Robotics Academy!
                 </p>
 
-                <div className="space-y-3 mb-8">
-                  <div className="flex items-center gap-3 text-left">
-                    <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" />
-                    <span className="font-paragraph text-foreground/90">60-minute interactive demo - Only ₹49</span>
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-center gap-2 text-left">
+                    <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
+                    <span className="font-paragraph text-xs text-foreground/90">60-minute interactive demo - Only $1</span>
                   </div>
-                  <div className="flex items-center gap-3 text-left">
-                    <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" />
-                    <span className="font-paragraph text-foreground/90">Meet our expert instructors</span>
+                  <div className="flex items-center gap-2 text-left">
+                    <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
+                    <span className="font-paragraph text-xs text-foreground/90">Meet our expert instructors</span>
                   </div>
-                  <div className="flex items-center gap-3 text-left">
-                    <CheckCircle className="w-5 h-5 text-secondary flex-shrink-0" />
-                    <span className="font-paragraph text-foreground/90">Try real robotics projects</span>
+                  <div className="flex items-center gap-2 text-left">
+                    <CheckCircle className="w-4 h-4 text-secondary flex-shrink-0" />
+                    <span className="font-paragraph text-xs text-foreground/90">Try real robotics projects</span>
                   </div>
                 </div>
 
                 <motion.button
-                    className="w-full bg-secondary text-secondary-foreground font-heading font-semibold px-8 py-4 rounded-lg neon-glow-secondary text-lg"
+                    className="w-full bg-secondary text-secondary-foreground font-heading font-semibold px-6 py-2 rounded-lg neon-glow-secondary text-sm"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => {
@@ -319,12 +319,12 @@ export default function HomePage() {
                       trackEvent('Popup Demo Booking Click', { source: 'timed_popup' });
                     }}
                   >
-                    Book Demo Now - ₹99
+                    Book Demo Now - $1
                   </motion.button>
 
                 <button
                   onClick={() => setShowScrollPopup(false)}
-                  className="mt-4 text-foreground/60 hover:text-foreground transition-colors font-paragraph text-sm"
+                  className="mt-2 text-foreground/60 hover:text-foreground transition-colors font-paragraph text-xs\"
                 >
                   Maybe later
                 </button>
@@ -518,12 +518,12 @@ export default function HomePage() {
                   }}
                 >
                   <div 
-                    className="absolute blur-3xl opacity-70"
+                    className="absolute blur-3xl opacity-40"
                     style={{
                       width: '1000px',
                       height: '800px',
-                      background: 'radial-gradient(ellipse 40% 60% at 30% 40%, rgba(255, 179, 102, 0.8), transparent 70%)',
-                      filter: 'blur(60px)',
+                      background: 'radial-gradient(ellipse 40% 60% at 30% 40%, rgba(255, 179, 102, 0.5), transparent 70%)',
+                      filter: 'blur(40px)',
                     }}
                   />
                 </motion.div>
@@ -532,8 +532,8 @@ export default function HomePage() {
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center -z-10"
                   animate={{
-                    opacity: [0.5, 1, 0.5],
-                    scale: [0.8, 1.2, 0.8],
+                    opacity: [0.3, 0.6, 0.3],
+                    scale: [0.8, 1.1, 0.8],
                   }}
                   transition={{
                     duration: 3,
@@ -546,8 +546,8 @@ export default function HomePage() {
                     style={{
                       width: '900px',
                       height: '900px',
-                      background: 'radial-gradient(ellipse 50% 70% at 50% 30%, rgba(255, 140, 66, 0.9), transparent 60%)',
-                      filter: 'blur(70px)',
+                      background: 'radial-gradient(ellipse 50% 70% at 50% 30%, rgba(255, 140, 66, 0.6), transparent 60%)',
+                      filter: 'blur(50px)',
                     }}
                   />
                 </motion.div>
@@ -557,7 +557,7 @@ export default function HomePage() {
                   className="absolute inset-0 flex items-center justify-center -z-10"
                   animate={{
                     rotate: [360, 0],
-                    opacity: [0.4, 0.8, 0.4],
+                    opacity: [0.25, 0.5, 0.25],
                   }}
                   transition={{
                     duration: 15,
@@ -570,8 +570,8 @@ export default function HomePage() {
                     style={{
                       width: '950px',
                       height: '820px',
-                      background: 'radial-gradient(ellipse 55% 65% at 60% 50%, rgba(255, 179, 102, 0.75), transparent 65%)',
-                      filter: 'blur(65px)',
+                      background: 'radial-gradient(ellipse 55% 65% at 60% 50%, rgba(255, 179, 102, 0.45), transparent 65%)',
+                      filter: 'blur(45px)',
                     }}
                   />
                 </motion.div>
@@ -580,8 +580,8 @@ export default function HomePage() {
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center -z-10"
                   animate={{
-                    scale: [0.9, 1.3, 0.9],
-                    opacity: [0.3, 0.8, 0.3],
+                    scale: [0.9, 1.15, 0.9],
+                    opacity: [0.2, 0.45, 0.2],
                   }}
                   transition={{
                     duration: 4,
@@ -595,8 +595,8 @@ export default function HomePage() {
                     style={{
                       width: '880px',
                       height: '720px',
-                      background: 'radial-gradient(ellipse 45% 75% at 45% 60%, rgba(255, 140, 66, 0.85), transparent 55%)',
-                      filter: 'blur(55px)',
+                      background: 'radial-gradient(ellipse 45% 75% at 45% 60%, rgba(255, 140, 66, 0.55), transparent 55%)',
+                      filter: 'blur(40px)',
                     }}
                   />
                 </motion.div>
@@ -605,8 +605,8 @@ export default function HomePage() {
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center -z-10"
                   animate={{
-                    opacity: [0.6, 1, 0.6],
-                    scale: [0.95, 1.1, 0.95],
+                    opacity: [0.4, 0.65, 0.4],
+                    scale: [0.95, 1.08, 0.95],
                   }}
                   transition={{
                     duration: 2.5,
@@ -619,8 +619,8 @@ export default function HomePage() {
                     style={{
                       width: '750px',
                       height: '750px',
-                      background: 'radial-gradient(ellipse 50% 60% at 50% 45%, rgba(255, 179, 102, 1), transparent 50%)',
-                      filter: 'blur(60px)',
+                      background: 'radial-gradient(ellipse 50% 60% at 50% 45%, rgba(255, 179, 102, 0.7), transparent 50%)',
+                      filter: 'blur(45px)',
                     }}
                   />
                 </motion.div>
@@ -685,15 +685,14 @@ export default function HomePage() {
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8 sm:mb-12 md:mb-16">
                     <FloatingElement duration={3} distance={15}>
-                      <Link to="/demo-booking" className="w-full sm:w-auto">
-                        <motion.button
-                          className="bg-primary text-primary-foreground font-heading font-semibold px-8 py-4 rounded-[10px] neon-glow-primary text-base sm:text-lg w-full"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          Book Demo →
-                        </motion.button>
-                      </Link>
+                      <motion.button
+                        onClick={handleBookDemoPayment}
+                        className="bg-primary text-primary-foreground font-heading font-semibold px-8 py-4 rounded-[10px] neon-glow-primary text-base sm:text-lg w-full sm:w-auto"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Book Demo →
+                      </motion.button>
                     </FloatingElement>
                   </div>
                 </div>
@@ -812,15 +811,14 @@ export default function HomePage() {
             </div>
 
             <div className="text-center px-4">
-              <Link to="/demo-booking" className="inline-block w-full sm:w-auto">
-                <motion.button
-                  className="bg-secondary text-secondary-foreground font-heading font-semibold px-8 sm:px-10 py-4 rounded-lg neon-glow-secondary text-base sm:text-lg w-full sm:w-auto"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Book Demo
-                </motion.button>
-              </Link>
+              <motion.button
+                onClick={handleBookDemoPayment}
+                className="bg-secondary text-secondary-foreground font-heading font-semibold px-8 sm:px-10 py-4 rounded-lg neon-glow-secondary text-base sm:text-lg w-full sm:w-auto"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Book Demo
+              </motion.button>
             </div>
           </div>
         </section>
@@ -906,7 +904,7 @@ export default function HomePage() {
                 Ready to Transform Your Future?
               </h2>
               <p className="font-paragraph text-base sm:text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto mb-8 sm:mb-12">
-                Take the first step toward becoming a robotics expert. Book a free demo, explore our curriculum, or start your enrollment today.
+                Take the first step toward becoming a robotics expert. Book a demo, explore our curriculum, or start your enrollment today.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
@@ -916,7 +914,7 @@ export default function HomePage() {
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Book Free Demo
+                    Book Demo
                   </motion.button>
                 </Link>
                 <Link to="/admission-process" className="w-full sm:w-auto">

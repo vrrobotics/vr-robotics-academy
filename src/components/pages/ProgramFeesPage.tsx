@@ -4,11 +4,20 @@ import { BaseCrudService } from '@/integrations';
 import { ProgramFees } from '@/entities';
 import { Check, Star } from 'lucide-react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import BookDemoButton from '@/components/BookDemoButton';
 
 export default function ProgramFeesPage() {
   const [plans, setPlans] = useState<ProgramFees[]>([]);
   const [loading, setLoading] = useState(true);
+  const [billingMode, setBillingMode] = useState<'session' | 'month'>('session');
+
+  // Monthly pricing (per month)
+  const monthlyPrices: Record<string, number> = {
+    'plan-basic': 149,
+    'plan-premium': 152,
+    'plan-elite': 180
+  };
 
   useEffect(() => {
     loadPlans();
@@ -24,9 +33,9 @@ export default function ProgramFeesPage() {
         _id: 'plan-basic',
         planName: 'Basic',
         price: 20,
-        billingCycle: 'month',
+        billingCycle: 'session',
         shortDescription: 'Perfect for learners who prefer collaborative group learning',
-        featuresSummary: `Group Class - 20 Students Online\nScheduled live sessions (2x per week)\nAccess to all learning materials\nProject assignments & feedback\nRobotics kit rental included\nCommunity forum support\nCompletion certificate`,
+        featuresSummary: `Group Class - 20 Students Online\nScheduled live sessions (2x per week)\nAccess to all learning materials\nProject assignments & feedback\nCommunity forum support\nCompletion certificate`,
         isRecommended: false,
         callToActionText: 'Start Learning'
       },
@@ -34,9 +43,9 @@ export default function ProgramFeesPage() {
         _id: 'plan-premium',
         planName: 'Premium',
         price: 22,
-        billingCycle: 'month',
+        billingCycle: 'session',
         shortDescription: 'Best for students seeking personalized attention and guidance',
-        featuresSummary: `Small Group Class - 5 Students Online\nScheduled live sessions (3x per week)\nAll learning materials + advanced content\nPersonalized feedback on projects\nPriority support & guidance\nRobotics kit rental included\n2 hours 1-on-1 mentoring per month\nProgress tracking dashboard\nProfessional certificate`,
+        featuresSummary: `Small Group Class - 5 Students Online\nScheduled live sessions (2x per week)\nAll learning materials + advanced content\nPersonalized feedback on projects\nPriority support & guidance\n2 hours 1-on-1 mentoring per month\nProgress tracking dashboard\nProfessional certificate`,
         isRecommended: true,
         callToActionText: 'Get Started Now'
       },
@@ -44,9 +53,9 @@ export default function ProgramFeesPage() {
         _id: 'plan-elite',
         planName: 'Elite',
         price: 25,
-        billingCycle: 'month',
+        billingCycle: 'session',
         shortDescription: 'Ultimate program for serious learners - fully customized learning',
-        featuresSummary: `One-on-One Online Classes\nFlexible scheduling (arrange with instructor)\nCustom curriculum tailored to your goals\nUnlimited 1-on-1 mentoring & guidance\nPremium robotics kit (included)\nAdvanced projects & real-world challenges\nCareer pathway planning\nElite professional certificate\nDirect instructor access`,
+        featuresSummary: `One-on-One Online Classes\nFlexible scheduling (arrange with instructor)\nCustom curriculum tailored to your goals\nPremium robotics kit (included)\nAdvanced projects & real-world challenges\nCareer pathway planning\nElite professional certificate\nDirect instructor access`,
         isRecommended: false,
         callToActionText: 'Book Your Session'
       }
@@ -99,6 +108,41 @@ export default function ProgramFeesPage() {
       {/* Pricing Cards */}
       <section className="relative py-16 px-8">
         <div className="max-w-7xl mx-auto">
+          {/* Billing Toggle */}
+          <div className="flex justify-center mb-12">
+            <div className="relative flex items-center w-64 p-1 rounded-full" style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)'
+            }}>
+              {/* Sliding Background */}
+              <motion.div
+                layoutId="toggle-bg"
+                className="absolute top-1 bottom-1 w-1/2 rounded-full bg-primary"
+                animate={{ x: billingMode === 'session' ? 0 : '100%' }}
+                transition={{ type: 'spring', damping: 20, stiffness: 200 }}
+              />
+              
+              {/* Toggle Buttons */}
+              <button
+                onClick={() => setBillingMode('session')}
+                className={`relative flex-1 py-2 font-heading font-semibold transition-colors duration-300 ${
+                  billingMode === 'session' ? 'text-primary-foreground' : 'text-foreground/60'
+                }`}
+              >
+                Per Session
+              </button>
+              <button
+                onClick={() => setBillingMode('month')}
+                className={`relative flex-1 py-2 font-heading font-semibold transition-colors duration-300 ${
+                  billingMode === 'month' ? 'text-primary-foreground' : 'text-foreground/60'
+                }`}
+              >
+                Per Month
+              </button>
+            </div>
+          </div>
+
           {loading ? (
             <div className="grid md:grid-cols-3 gap-8">
               {[...Array(3)].map((_, i) => (
@@ -150,15 +194,13 @@ export default function ProgramFeesPage() {
                   <h3 className="font-heading text-3xl mb-4 text-foreground">{plan.planName}</h3>
                   
                   <div className="mb-6">
-                    <div className="flex items-baseline gap-2">
+                    <div className="flex items-baseline gap-2 mb-2">
                       <span className="font-heading text-5xl text-primary">
-                        ${plan.price}
+                        ${billingMode === 'session' ? plan.price : monthlyPrices[plan._id]}
                       </span>
-                      {plan.billingCycle && (
-                        <span className="font-paragraph text-foreground/60">
-                          /{plan.billingCycle}
-                        </span>
-                      )}
+                      <span className="font-paragraph text-foreground/60">
+                        /{billingMode === 'session' ? 'session' : 'month'}
+                      </span>
                     </div>
                   </div>
 
@@ -400,6 +442,7 @@ export default function ProgramFeesPage() {
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

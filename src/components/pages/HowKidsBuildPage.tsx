@@ -2,9 +2,26 @@ import { motion } from 'framer-motion';
 import { Image } from '@/components/ui/image';
 import { Lightbulb, Wrench, Code, TestTube, Presentation, Trophy } from 'lucide-react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import BookDemoPopup from '@/components/BookDemoPopup';
+import RazorpayService from '@/services/razorpayService';
 
 export default function HowKidsBuildPage() {
+  const handleBookDemoPayment = async () => {
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('Demo payment successful:', response);
+        },
+        (error) => {
+          console.error('Demo payment failed:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating demo payment:', error);
+    }
+  };
+
   const steps = [
     {
       icon: Lightbulb,
@@ -392,18 +409,19 @@ export default function HowKidsBuildPage() {
               className="bg-primary text-primary-foreground font-heading font-semibold px-8 py-4 rounded-lg"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/demo-booking'}
+              onClick={handleBookDemoPayment}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              Book Free Demo
+              Book Demo
             </motion.button>
           </div>
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

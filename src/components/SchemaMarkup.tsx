@@ -28,7 +28,7 @@ export const SchemaMarkup = ({ type, data }: SchemaMarkupProps) => {
           contactPoint: {
             '@type': 'ContactPoint',
             contactType: 'Customer Service',
-            telephone: '+1-555-123-4567',
+            telephone: '+91 7483430092',
             email: 'info@vrroboticsacademy.com',
           },
           address: {

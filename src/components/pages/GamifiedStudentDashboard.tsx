@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { useGamificationStore } from '@/stores/gamificationStore';
 import { BaseCrudService } from '@/integrations';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -150,6 +151,7 @@ export default function GamifiedStudentDashboard() {
         </Tabs>
       </div>
     </div>
+    <Footer />
     </>
   );
 }

@@ -377,7 +377,7 @@ export default function Module1DetailsPage() {
                   whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 140, 66, 0.1)' }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Book Free Demo
+                  Book Demo
                 </motion.button>
               </Link>
             </motion.div>

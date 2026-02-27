@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { BaseCrudService } from '@/integrations';
 import { CertificateExamples } from '@/entities';
 import { Award, CheckCircle, Star, Trophy } from 'lucide-react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import RazorpayService from '@/services/razorpayService';
 
 // Professional SVG Certificate Generator with Levels
 const CertificateSVG = ({ name, index = 0 }: { name: string; index?: number }) => {
@@ -126,9 +127,9 @@ const CertificateSVG = ({ name, index = 0 }: { name: string; index?: number }) =
         CERTIFICATE
       </text>
 
-      {/* OF ACHIEVEMENT */}
+      {/* OF COMPLETION */}
       <text x="480" y="220" fontSize="52" fontWeight="600" textAnchor="middle" fill={cert.accent} fontFamily="Georgia, serif" letterSpacing="3">
-        OF ACHIEVEMENT
+        OF COMPLETION
       </text>
 
       {/* Dividing Line */}
@@ -237,7 +238,7 @@ const CertificateCard = ({ cert, index }: { cert: CertificateExamples; index: nu
         backdropFilter: 'blur(10px)'
       }}
     >
-      {/* Beautiful SVG Certificate Design */}
+      {/* Certificate Preview */}
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
@@ -248,7 +249,16 @@ const CertificateCard = ({ cert, index }: { cert: CertificateExamples; index: nu
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
         }}
       >
-        <CertificateSVG name={cert.certificateName || 'Certificate'} index={index} />
+        {cert.certificateImage ? (
+          <img
+            src={cert.certificateImage}
+            alt={cert.certificateName || 'Certificate'}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <CertificateSVG name={cert.certificateName || 'Certificate'} index={index} />
+        )}
       </motion.div>
 
       {/* Certificate Details */}
@@ -296,43 +306,61 @@ const CertificateCard = ({ cert, index }: { cert: CertificateExamples; index: nu
 };
 
 export default function CertificatesPage() {
-  const navigate = useNavigate();
   const [certificates, setCertificates] = useState<CertificateExamples[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleBookDemoPayment = async () => {
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('Demo payment successful:', response);
+        },
+        (error) => {
+          console.error('Demo payment failed:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating demo payment:', error);
+    }
+  };
 
   // Default example certificates for GitHub Pages static deployment
   const defaultCertificates: CertificateExamples[] = [
     {
       _id: 'default-1',
-      certificateName: 'Robotics Fundamentals',
-      certificateDescription: 'Master the essential principles of robotics, programming, and STEM innovation',
-      awardedFor: 'Completion of Robotics Fundamentals course with distinction',
-      recipientType: 'Students (Grades 1-12)',
-      issuingAuthority: 'VR Robotics Academy'
+      certificateName: 'Robotics Foundation Program',
+      certificateDescription: 'Foundation-level completion certificate for core robotics concepts, sensors, and basic automation.',
+      awardedFor: 'Successfully completed the Robotics Foundation Program conducted by VR Robotics.',
+      recipientType: 'Students (Foundation Level)',
+      issuingAuthority: 'VR Robotics Academy',
+      certificateImage: 'https://res.cloudinary.com/dicfqwlfq/image/upload/v1772162051/80efe18f-d7fc-4038-91ac-b3292c172160_shxwie.png'
     },
     {
       _id: 'default-2',
-      certificateName: 'Advanced 3D Design & CAD',
-      certificateDescription: 'Expert proficiency in 3D modeling, CAD design, and digital fabrication',
-      awardedFor: 'Advanced course completion and project portfolio review',
-      recipientType: 'Students (Grades 4-12)',
-      issuingAuthority: 'VR Robotics Academy'
+      certificateName: 'Robotics Basic Program',
+      certificateDescription: 'Basic program completion certificate focused on robotics fundamentals, creativity, and practical learning.',
+      awardedFor: 'Successfully completed the Robotics Basic Program conducted by VR Robotics.',
+      recipientType: 'Students (Basic Level)',
+      issuingAuthority: 'VR Robotics Academy',
+      certificateImage: 'https://res.cloudinary.com/dicfqwlfq/image/upload/v1772162050/3ab992d9-f900-465f-b419-24e107461a2d_qs75nh.png'
     },
     {
       _id: 'default-3',
-      certificateName: 'IoT & Microcontroller Specialist',
-      certificateDescription: 'Specialized knowledge in Internet of Things, embedded systems, and microcontrollers',
-      awardedFor: 'IoT course completion with advanced project demonstration',
-      recipientType: 'Students (Grades 8-12)',
-      issuingAuthority: 'VR Robotics Academy'
+      certificateName: 'Robotics Standard Program',
+      certificateDescription: 'Standard program completion certificate covering structured robotics learning and real project execution.',
+      awardedFor: 'Successfully completed the Robotics Standard Program conducted by VR Robotics.',
+      recipientType: 'Students (Standard Level)',
+      issuingAuthority: 'VR Robotics Academy',
+      certificateImage: 'https://res.cloudinary.com/dicfqwlfq/image/upload/v1772162042/a7d152ab-82b9-4771-a9b3-384389c67596_ooa6gd.png'
     },
     {
       _id: 'default-4',
-      certificateName: 'Instructor Certification',
-      certificateDescription: 'Professional certification in robotics education and teaching excellence',
-      awardedFor: 'Instructor training completion and educational contribution',
-      recipientType: 'Teachers & Instructors',
-      issuingAuthority: 'VR Robotics Academy'
+      certificateName: 'Robotics Advanced Program',
+      certificateDescription: 'Advanced program completion certificate for higher-level robotics thinking, execution, and innovation.',
+      awardedFor: 'Successfully completed the Robotics Advanced Program conducted by VR Robotics.',
+      recipientType: 'Students (Advanced Level)',
+      issuingAuthority: 'VR Robotics Academy',
+      certificateImage: 'https://res.cloudinary.com/dicfqwlfq/image/upload/v1772162051/aaaf5be5-b182-4daf-90d6-568636a4eb87_twohy3.png'
     }
   ];
 
@@ -343,8 +371,14 @@ export default function CertificatesPage() {
   const loadCertificates = async () => {
     setLoading(true);
     const { items } = await BaseCrudService.getAll<CertificateExamples>('certificateexamples');
-    // Use default certificates if none found in database
-    setCertificates(items.length > 0 ? items : defaultCertificates);
+
+    // Always show the 4 requested program certificates first, then append any additional DB certificates.
+    const defaultNameSet = new Set(defaultCertificates.map((cert) => cert.certificateName?.toLowerCase().trim()));
+    const additionalCertificates = (items || []).filter(
+      (cert) => !defaultNameSet.has(cert.certificateName?.toLowerCase().trim() || '')
+    );
+
+    setCertificates([...defaultCertificates, ...additionalCertificates]);
     setLoading(false);
   };
 
@@ -400,16 +434,16 @@ export default function CertificatesPage() {
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {[
               {
-                title: 'Industry Recognition',
-                description: 'Our certificates are valued by schools and tech companies worldwide'
+                title: 'Skills Verification',
+                description: 'Demonstrate mastery of robotics, coding, and engineering concepts with verified credentials recognized by educators and industry'
               },
               {
-                title: 'Portfolio Building',
-                description: 'Add certificates to your portfolio to showcase your robotics expertise'
+                title: 'Academic & Career Advancement',
+                description: 'Strengthen your resume and college applications with professional certifications that showcase your technical expertise'
               },
               {
-                title: 'Motivation & Pride',
-                description: 'Celebrate milestones and build confidence with each achievement'
+                title: 'Continuous Learning Path',
+                description: 'Progress through multiple skill levels from Beginner to Master Elite, building career-ready competencies at your pace'
               }
             ].map((benefit, index) => (
               <motion.div
@@ -569,18 +603,19 @@ export default function CertificatesPage() {
               className="bg-primary text-primary-foreground font-heading font-semibold px-8 py-4 rounded-[10px]"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/demo-booking')}
+              onClick={handleBookDemoPayment}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              Book Free Demo
+              Book Demo
             </motion.button>
           </div>
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

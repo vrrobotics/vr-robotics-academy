@@ -18,7 +18,7 @@ export const admissionStepPrompts = {
     keywords: 'application form, registration, online form, digital application'
   },
   2: {
-    title: 'Free Demo Session',
+    title: 'Demo Session',
     prompt: 'Student wearing VR headset experiencing virtual reality robotics learning, interactive VR environment, gaming controller, futuristic tech, neon lights, immersive experience',
     keywords: 'VR headset, virtual reality, VR gaming, immersive learning, interactive demo'
   },
@@ -48,7 +48,7 @@ export const generateImageUrl = (stepNumber: 1 | 2 | 3 | 4 | 5): string => {
     // Step 1: Online Application
     1: 'https://images.unsplash.com/photo-1667372335957-b8d1b5eb60e3?w=500&h=500&fit=crop&q=80&auto=format',
     
-    // Step 2: Free Demo Session - VR/Gaming focused
+    // Step 2: Demo Session - VR/Gaming focused
     2: 'https://images.unsplash.com/photo-1633356122544-f134324ef6db?w=500&h=500&fit=crop&q=80&auto=format',
     
     // Step 3: Assessment & Feedback

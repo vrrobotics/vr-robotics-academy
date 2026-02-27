@@ -308,16 +308,33 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Link to="/demo-booking" onClick={() => setIsOpen(false)}>
-                    <motion.button
-                      className="w-full bg-primary text-primary-foreground font-heading font-semibold px-6 py-3 rounded-[10px]"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => trackEvent('cta_click', { button: 'book_demo_mobile' })}
-                    >
-                      Book Demo
-                    </motion.button>
-                  </Link>
+                  <motion.button
+                    className="w-full bg-primary text-primary-foreground font-heading font-semibold px-6 py-3 rounded-[10px]"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={async () => {
+                      setIsOpen(false);
+                      trackEvent('cta_click', { button: 'book_demo_mobile' });
+                      await RazorpayService.initiateDemo1DollarPayment(
+                        (response) => {
+                          console.log('Payment successful:', response);
+                          trackEvent('demo_booking_payment_success', { 
+                            source: 'header_mobile',
+                            paymentId: response.razorpay_payment_id 
+                          });
+                        },
+                        (error) => {
+                          console.error('Payment failed:', error);
+                          trackEvent('demo_booking_payment_failed', { 
+                            source: 'header_mobile',
+                            error: error?.message 
+                          });
+                        }
+                      );
+                    }}
+                  >
+                    Book Demo
+                  </motion.button>
                 </>
               )}
             </div>

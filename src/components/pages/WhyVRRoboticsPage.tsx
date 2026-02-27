@@ -2,9 +2,26 @@ import { motion } from 'framer-motion';
 import { Image } from '@/components/ui/image';
 import { Brain, Trophy, Users, Sparkles, Globe, Rocket } from 'lucide-react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import BookDemoPopup from '@/components/BookDemoPopup';
+import RazorpayService from '@/services/razorpayService';
 
 export default function WhyVRRoboticsPage() {
+  const handleBookDemoPayment = async () => {
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('Demo payment successful:', response);
+        },
+        (error) => {
+          console.error('Demo payment failed:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating demo payment:', error);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -271,7 +288,7 @@ export default function WhyVRRoboticsPage() {
                 className="bg-primary text-primary-foreground font-heading font-semibold px-8 py-4 rounded-[10px]"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => window.location.href = '/demo-booking'}
+                onClick={handleBookDemoPayment}
               >
                 Book Free Demo
               </motion.button>
@@ -288,6 +305,7 @@ export default function WhyVRRoboticsPage() {
         </div>
       </section>
       </div>
+    <Footer />
     </>
   );
 }

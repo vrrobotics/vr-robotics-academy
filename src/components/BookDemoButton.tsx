@@ -2,7 +2,7 @@
  * Reusable Book Demo Payment Button Component
  * 
  * Use this component anywhere you want to add a "Book Demo" payment button.
- * Handles all Razorpay payment logic internally.
+ * Handles all Razorpay payment logic internally and redirects to booking form on success.
  * 
  * @example
  * ```tsx
@@ -18,7 +18,9 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RazorpayService from '@/services/razorpayService';
+import PaymentWorkflowService from '@/services/paymentWorkflowService';
 
 interface BookDemoButtonProps {
   variant?: 'primary' | 'secondary' | 'outline';
@@ -29,6 +31,7 @@ interface BookDemoButtonProps {
   onError?: (error: any) => void;
   source?: string; // For tracking which component triggered the payment
   disabled?: boolean;
+  redirectToDemoBooking?: boolean; // Whether to redirect to booking form after payment
 }
 
 export default function BookDemoButton({
@@ -39,8 +42,10 @@ export default function BookDemoButton({
   onSuccess,
   onError,
   source = 'book_demo_button',
-  disabled = false
+  disabled = false,
+  redirectToDemoBooking = true
 }: BookDemoButtonProps) {
+  const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const variantStyles = {
@@ -61,15 +66,26 @@ export default function BookDemoButton({
       await RazorpayService.initiateDemo1DollarPayment(
         (response) => {
           console.log('✓ Payment successful:', response);
+          
+          // Store payment session for later verification
+          PaymentWorkflowService.storePaymentSession(response.razorpay_payment_id);
+          
           if (onSuccess) {
             onSuccess(response);
           }
+          
           // Track the event
           if (typeof window !== 'undefined' && (window as any).gtag) {
             (window as any).gtag('event', 'demo_booking_payment_success', {
               source,
               paymentId: response.razorpay_payment_id
             });
+          }
+          
+          // Redirect to booking form with payment info if enabled
+          if (redirectToDemoBooking) {
+            console.log('[BookDemoButton] Redirecting to booking form with payment info');
+            navigate(`/demo-booking?payment_id=${response.razorpay_payment_id}&payment_verified=true`);
           }
         },
         (error) => {

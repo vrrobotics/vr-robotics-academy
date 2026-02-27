@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { Mail, Phone, Clock } from 'lucide-react';
 import { useState } from 'react';
 import { messageService } from '@/services/messageService';
 import { notificationService } from '@/components/NotificationBar';
 import Header from '@/components/Header';
 import BookDemoPopup from '@/components/BookDemoPopup';
+import Footer from '@/components/Footer';
+import RazorpayService from '@/services/razorpayService';
 
 export default function ContactPage() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,6 +16,21 @@ export default function ContactPage() {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleBookDemoPayment = async () => {
+    try {
+      await RazorpayService.initiateDemo1DollarPayment(
+        (response) => {
+          console.log('Demo payment successful:', response);
+        },
+        (error) => {
+          console.error('Demo payment failed:', error);
+        }
+      );
+    } catch (error) {
+      console.error('Error initiating demo payment:', error);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -93,7 +108,7 @@ export default function ContactPage() {
       {/* Contact Info Cards */}
       <section className="relative py-16 px-4 sm:px-6 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-16">
             {[
               {
                 icon: Mail,
@@ -104,20 +119,14 @@ export default function ContactPage() {
               {
                 icon: Phone,
                 title: 'Call Us',
-                info: '+1 (555) 123-4567',
+                info: '+91 7483430092',
                 subinfo: 'Mon-Sat, 9AM-6PM'
-              },
-              {
-                icon: MapPin,
-                title: 'Visit Us',
-                info: '123 Innovation Drive',
-                subinfo: 'Tech Valley, CA 94025'
               },
               {
                 icon: Clock,
                 title: 'Office Hours',
-                info: 'Monday - Saturday',
-                subinfo: '9:00 AM - 6:00 PM'
+                info: '24/7',
+                subinfo: 'Always Available'
               }
             ].map((contact, index) => (
               <motion.div
@@ -195,7 +204,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground font-paragraph focus:outline-none focus:border-primary"
-                    placeholder="+1 (555) 000-0000"
+                    placeholder="+91 7483430092"
                   />
                 </div>
                 <div>
@@ -234,7 +243,7 @@ export default function ContactPage() {
                 <div className="space-y-6">
                   {[
                     {
-                      title: 'Schedule a Free Demo',
+                      title: 'Schedule a Demo',
                       description: 'Experience our program firsthand with a complimentary demo session'
                     },
                     {
@@ -284,7 +293,7 @@ export default function ContactPage() {
                   className="bg-secondary text-secondary-foreground font-heading font-semibold px-6 py-3 rounded-lg"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/demo-booking')}
+                  onClick={handleBookDemoPayment}
                 >
                   Book Demo Instead
                 </motion.button>
@@ -294,38 +303,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Map Section */}
-      <section className="relative py-24 px-4 sm:px-6 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2
-            className="font-heading text-4xl sm:text-5xl text-center mb-16 text-secondary"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            Find Us
-          </motion.h2>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="aspect-video rounded-3xl overflow-hidden"
-            style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(10px)'
-            }}
-          >
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
-                <p className="font-heading text-xl sm:text-2xl text-foreground">123 Innovation Drive</p>
-                <p className="font-paragraph text-foreground/70">Tech Valley, CA 94025</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <Footer />
       </div>
     </>
   );

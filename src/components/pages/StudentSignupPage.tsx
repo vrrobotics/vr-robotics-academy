@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { BaseCrudService } from '@/integrations';
 import { StudentApprovals } from '@/entities';
 import { EmailService } from '@/services/emailService';
+import Footer from '@/components/Footer';
 import { Lock } from 'lucide-react';
 import Header from '@/components/Header';
 
@@ -329,6 +330,7 @@ export default function StudentSignupPage() {
           </motion.div>
         </motion.div>
       </div>
+      <Footer />
       </div>
     </>
   );

@@ -20,7 +20,7 @@ export default function Footer() {
 
   const support = [
     { name: 'Contact Us', path: '/contact' },
-    { name: 'Book Free Demo', path: '/demo-booking' },
+    { name: 'Book Demo', path: '/demo-booking' },
     { name: 'FAQ', path: '#' },
     { name: 'Support Center', path: '#' }
   ];
@@ -39,7 +39,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative bg-background mt-16 sm:mt-20 md:mt-24 overflow-hidden">
+    <footer className="relative bg-background mt-0 overflow-hidden w-full">
       {/* Animated background elements */}
       <motion.div
         className="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl opacity-5"
@@ -200,7 +200,9 @@ export default function Footer() {
             </div>
             <div>
               <p className="font-heading font-bold text-foreground mb-1">Call Us</p>
-              <p className="font-paragraph text-sm text-foreground/70">+1 (234) 567-890</p>
+              <a href="tel:+917483430092" className="font-paragraph text-sm text-foreground/70 hover:text-secondary transition-colors">
+                +91 7483430092
+              </a>
             </div>
           </motion.div>
         </div>

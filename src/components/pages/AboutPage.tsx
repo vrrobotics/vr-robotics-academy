@@ -3,6 +3,7 @@ import { Image } from '@/components/ui/image';
 import { Target, Lightbulb, Microscope, Handshake } from 'lucide-react';
 import Header from '@/components/Header';
 import BookDemoPopup from '@/components/BookDemoPopup';
+import Footer from '@/components/Footer';
 
 export default function AboutPage() {
   return (
@@ -227,6 +228,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <Footer />
       </div>
     </>
   );

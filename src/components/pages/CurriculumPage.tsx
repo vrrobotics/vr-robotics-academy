@@ -774,7 +774,7 @@ export default function CurriculumPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              Book a free demo, explore our admission process, or view pricing options to get started!
+              Book a demo, explore our admission process, or view pricing options to get started!
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -789,7 +789,7 @@ export default function CurriculumPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Book Free Demo
+                  Book Demo
                 </motion.button>
               </Link>
               <Link to="/admission-process">

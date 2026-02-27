@@ -795,7 +795,7 @@ export default function Module4DetailsPage() {
                       animate={{ x: [-100, 100] }}
                       transition={{ duration: 3, repeat: Infinity }}
                     />
-                    <span className="relative">Book Free Demo</span>
+                    <span className="relative">Book Demo</span>
                   </motion.button>
                 </Link>
               </motion.div>
