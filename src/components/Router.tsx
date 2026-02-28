@@ -1,8 +1,8 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import ErrorPage from "@/components/ErrorPage";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import RazorpayService from "@/services/razorpayService";
+import RazorpayService, { type DemoBookingDetails } from "@/services/razorpayService";
 
 // Lazy load page components for better performance
 const HomePage = lazy(() => import("@/components/pages/HomePage").catch(() => {
@@ -450,27 +450,18 @@ const router = createBrowserRouter([
 export default function AppRouter() {
   console.log("[Router] AppRouter mounted");
   const lastPathRef = useRef<string | null>(null);
-  const isBookDemoProcessingRef = useRef(false);
-
-  const openBookDemoCheckout = async () => {
-    if (isBookDemoProcessingRef.current) return;
-    isBookDemoProcessingRef.current = true;
-
-    try {
-      await RazorpayService.initiateDemo1DollarPayment(
-        (response) => {
-          console.log("Demo payment successful:", response);
-        },
-        (error) => {
-          console.error("Demo payment failed:", error);
-        }
-      );
-    } catch (error) {
-      console.error("Error opening Razorpay checkout:", error);
-    } finally {
-      isBookDemoProcessingRef.current = false;
-    }
-  };
+  const [showDemoDetailsForm, setShowDemoDetailsForm] = useState(false);
+  const [demoDetails, setDemoDetails] = useState<DemoBookingDetails>({
+    parentName: '',
+    email: '',
+    phone: '',
+    childName: '',
+    childAge: '',
+    preferredDate: '',
+    preferredTime: '',
+    interests: '',
+    message: ''
+  });
 
   useEffect(() => {
     const unsubscribe = router.subscribe((state) => {
@@ -481,6 +472,20 @@ export default function AppRouter() {
       }
     });
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const openForm = (event: Event) => {
+      const customEvent = event as CustomEvent<DemoBookingDetails>;
+      setDemoDetails((prev) => ({
+        ...prev,
+        ...(customEvent.detail || {})
+      }));
+      setShowDemoDetailsForm(true);
+    };
+
+    window.addEventListener('vr:open-demo-details-form', openForm as EventListener);
+    return () => window.removeEventListener('vr:open-demo-details-form', openForm as EventListener);
   }, []);
 
   useEffect(() => {
@@ -507,12 +512,79 @@ export default function AppRouter() {
       if (!isDemoBookingLink) return;
 
       event.preventDefault();
-      void openBookDemoCheckout();
+      void RazorpayService.initiateDemo1DollarPayment();
     };
 
     document.addEventListener("click", handleBookDemoLinks, true);
     return () => document.removeEventListener("click", handleBookDemoLinks, true);
   }, []);
 
-  return <RouterProvider router={router} />;
+  const handleDetailChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setDemoDetails((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleCloseDemoForm = () => {
+    setShowDemoDetailsForm(false);
+    window.dispatchEvent(new CustomEvent('vr:demo-details-cancelled'));
+  };
+
+  const handleSubmitDemoForm = (e: FormEvent) => {
+    e.preventDefault();
+    RazorpayService.storeDemoBookingDetails(demoDetails);
+    setShowDemoDetailsForm(false);
+    window.dispatchEvent(new CustomEvent('vr:demo-details-submitted', { detail: demoDetails }));
+  };
+
+  return (
+    <>
+      <RouterProvider router={router} />
+      {showDemoDetailsForm && (
+        <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-primary/30 bg-background p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-heading text-2xl text-foreground">Book Demo Details</h2>
+              <button type="button" onClick={handleCloseDemoForm} className="text-foreground/70 hover:text-foreground">
+                Close
+              </button>
+            </div>
+            <form onSubmit={handleSubmitDemoForm} className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <input name="parentName" value={demoDetails.parentName || ''} onChange={handleDetailChange} required placeholder="Parent/Guardian Name" className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground" />
+                <input type="email" name="email" value={demoDetails.email || ''} onChange={handleDetailChange} required placeholder="Email Address" className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground" />
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input name="phone" value={demoDetails.phone || ''} onChange={handleDetailChange} required placeholder="Phone Number" className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground" />
+                <input name="childName" value={demoDetails.childName || ''} onChange={handleDetailChange} required placeholder="Child's Name" className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground" />
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <select name="childAge" value={demoDetails.childAge || ''} onChange={handleDetailChange} required className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground">
+                  <option value="">Child's Age</option>
+                  {[...Array(9)].map((_, i) => (
+                    <option key={i} value={8 + i}>{8 + i} years</option>
+                  ))}
+                </select>
+                <input type="date" name="preferredDate" value={demoDetails.preferredDate || ''} onChange={handleDetailChange} required className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground" />
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <select name="preferredTime" value={demoDetails.preferredTime || ''} onChange={handleDetailChange} required className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground">
+                  <option value="">Preferred Time</option>
+                  <option value="morning">Morning (9AM - 12PM)</option>
+                  <option value="afternoon">Afternoon (12PM - 3PM)</option>
+                  <option value="evening">Evening (3PM - 6PM)</option>
+                </select>
+                <input name="interests" value={demoDetails.interests || ''} onChange={handleDetailChange} placeholder="Interests (optional)" className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground" />
+              </div>
+              <textarea name="message" value={demoDetails.message || ''} onChange={handleDetailChange} rows={3} placeholder="Additional message (optional)" className="w-full px-4 py-3 rounded-lg bg-background/50 border border-foreground/20 text-foreground" />
+              <button type="submit" className="w-full bg-primary text-primary-foreground font-heading font-semibold px-6 py-3 rounded-[10px]">
+                Continue to Payment
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

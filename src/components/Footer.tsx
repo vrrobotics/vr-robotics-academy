@@ -67,18 +67,14 @@ export default function Footer() {
             <Link to="/">
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                className="mb-6 flex items-center gap-3"
+                className="mb-6 flex items-center"
               >
                 <Image
                   src="https://res.cloudinary.com/dicfqwlfq/image/upload/v1764505259/VR_Robotics_Logo_upscaled_1_rrrrn8.png"
                   alt="VR Robotics Academy Logo"
-                  width={60}
-                  className="h-auto"
+                  width={140}
+                  className="h-auto w-[140px] sm:w-[160px]"
                 />
-                <div>
-                  <p className="font-heading font-bold text-foreground">VR Robotics</p>
-                  <p className="font-paragraph text-xs text-foreground/60">Live in future</p>
-                </div>
               </motion.div>
             </Link>
             <p className="font-paragraph text-sm text-foreground/70 mb-6 leading-relaxed">

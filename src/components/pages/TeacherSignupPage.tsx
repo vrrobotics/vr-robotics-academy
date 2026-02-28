@@ -31,6 +31,7 @@ export default function TeacherSignupPage() {
   const [error, setError] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [uploadedDocuments, setUploadedDocuments] = useState<DocumentFile[]>([]);
   const [formData, setFormData] = useState({
     teacherFullName: '',
@@ -113,10 +114,9 @@ export default function TeacherSignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('Coming soon!!!!');
+    setIsLoading(true);
+    setError('');
     setSuccessMessage('');
-    setIsLoading(false);
-    return;
 
     try {
       // Validate form
@@ -174,7 +174,8 @@ export default function TeacherSignupPage() {
 
       console.log('[TeacherSignupPage] ✓ Teacher approval record created successfully');
 
-      setSuccessMessage('✓ Your application has been submitted successfully! You will receive an email once the admin reviews your application.');
+      setSuccessMessage('Thank you for registering. We will get back to you soon.');
+      setShowSuccessModal(true);
       
       // Reset form
       setFormData({
@@ -187,11 +188,6 @@ export default function TeacherSignupPage() {
         confirmPassword: '',
       });
       setUploadedDocuments([]);
-
-      // Redirect after 3 seconds
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
     } catch (err) {
       console.error('Error submitting teacher signup:', err);
       setError('Failed to submit signup. Please try again.');
@@ -514,6 +510,34 @@ export default function TeacherSignupPage() {
           </form>
         </motion.div>
 
+        {showSuccessModal && (
+          <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="w-full max-w-md rounded-2xl border border-primary/30 bg-slate-900/95 p-6 text-center"
+            >
+              <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-heading text-2xl text-white mb-2">Thank You For Registering</h3>
+              <p className="font-paragraph text-slate-300 mb-6">
+                We will get back to you shortly after reviewing your details.
+              </p>
+              <Button
+                type="button"
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  navigate('/');
+                }}
+                className="w-full bg-primary hover:bg-primary/90 text-white font-heading font-semibold py-3 rounded-lg"
+              >
+                OK
+              </Button>
+            </motion.div>
+          </div>
+        )}
+
         {/* Benefits Section */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -544,3 +568,4 @@ export default function TeacherSignupPage() {
     </>
   );
 }
+

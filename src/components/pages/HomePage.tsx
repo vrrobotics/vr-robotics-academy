@@ -527,7 +527,7 @@ export default function HomePage() {
               {/* Robot/Glow Layer - Large screens only */}
               {isLargeScreen && (
                 <motion.div
-                  className="absolute right-0 top-0 w-full lg:w-1/2 h-full flex items-center justify-center z-20 pointer-events-none"
+                  className="absolute right-0 top-0 w-full lg:w-1/2 h-full flex items-center justify-center z-20 pointer-events-auto"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
@@ -667,7 +667,7 @@ export default function HomePage() {
                           borderRadius: '20px',
                           transform: 'scale(1.5)',
                           zIndex: 10,
-                          pointerEvents: 'none',
+                          pointerEvents: 'auto',
                         }}
                       />
                     </div>
@@ -1094,3 +1094,5 @@ export default function HomePage() {
     </>
   );
 }
+
+

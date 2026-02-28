@@ -223,25 +223,16 @@ export default function ProgramFeesPage() {
                     </div>
                   )}
 
-                  <motion.button
-                    className={`w-full font-heading font-semibold px-8 py-4 rounded-lg ${
-                      plan.isRecommended
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-transparent text-primary border-2 border-primary'
-                    }`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <BookDemoButton
-                      variant={plan.isRecommended ? 'primary' : 'outline'}
-                      size="md"
-                      source="program_fees_page"
-                      children={plan.callToActionText || 'Get Started'}
-                      onSuccess={() => {
-                        console.log('User is ready to enroll in:', plan.planName);
-                      }}
-                    />
-                  </motion.button>
+                  <BookDemoButton
+                    variant={plan.isRecommended ? 'primary' : 'outline'}
+                    size="md"
+                    className="w-full"
+                    source="program_fees_page"
+                    children={plan.callToActionText || 'Get Started'}
+                    onSuccess={() => {
+                      console.log('User is ready to enroll in:', plan.planName);
+                    }}
+                  />
                 </motion.div>
               ))}
             </div>

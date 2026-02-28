@@ -3,6 +3,8 @@
  * Handles payment processing for demo bookings
  */
 
+import { GoogleSheetsService } from '@/services/googleSheetsService';
+
 interface RazorpayOptions {
   amount: number; // Amount in minor units of `currency` (e.g. 100 cents = USD 1)
   currency?: string;
@@ -13,6 +15,18 @@ interface RazorpayOptions {
   prefillName?: string;
   onSuccess?: (response: any) => void;
   onError?: (error: any) => void;
+}
+
+export interface DemoBookingDetails {
+  parentName?: string;
+  email?: string;
+  phone?: string;
+  childName?: string;
+  childAge?: string;
+  preferredDate?: string;
+  preferredTime?: string;
+  interests?: string;
+  message?: string;
 }
 
 interface RazorpayOrderResponse {
@@ -30,6 +44,8 @@ export class RazorpayService {
   private static readonly KEY_ID =
     ((import.meta as any)?.env?.VITE_RAZORPAY_KEY_ID as string) || 'rzp_test_SLEljQjEAaLhr7';
   private static readonly SCRIPT_URL = 'https://checkout.razorpay.com/v1/checkout.js';
+  private static readonly DEMO_DETAILS_STORAGE_KEY = 'vr_demo_booking_details';
+  private static readonly SHEETS_SYNC_KEY_PREFIX = 'vr_sheets_synced_';
 
   private static readonly PRODUCT_DESCRIPTION =
     'VR Robotics demo class booking for students. Hands-on robotics and AI learning session.';
@@ -54,6 +70,149 @@ export class RazorpayService {
       script.onerror = () => reject(new Error('Failed to load Razorpay script'));
       document.body.appendChild(script);
     });
+  }
+
+  private static sanitizeNoteValue(value?: string): string {
+    const normalized = (value || '').trim();
+    return normalized.length > 255 ? normalized.slice(0, 255) : normalized;
+  }
+
+  static storeDemoBookingDetails(details: DemoBookingDetails): void {
+    try {
+      if (typeof window === 'undefined') return;
+      window.localStorage.setItem(this.DEMO_DETAILS_STORAGE_KEY, JSON.stringify(details || {}));
+    } catch (error) {
+      console.warn('[Razorpay] Failed to persist demo booking details:', error);
+    }
+  }
+
+  static getStoredDemoBookingDetails(): DemoBookingDetails {
+    try {
+      if (typeof window === 'undefined') return {};
+      const raw = window.localStorage.getItem(this.DEMO_DETAILS_STORAGE_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      console.warn('[Razorpay] Failed to read stored demo booking details:', error);
+      return {};
+    }
+  }
+
+  private static getSheetsSyncKey(paymentId: string): string {
+    return `${this.SHEETS_SYNC_KEY_PREFIX}${paymentId}`;
+  }
+
+  static hasPaymentBeenSyncedToSheets(paymentId?: string): boolean {
+    try {
+      if (!paymentId || typeof window === 'undefined') return false;
+      return window.sessionStorage.getItem(this.getSheetsSyncKey(paymentId)) === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  static markPaymentSyncedToSheets(paymentId?: string): void {
+    try {
+      if (!paymentId || typeof window === 'undefined') return;
+      window.sessionStorage.setItem(this.getSheetsSyncKey(paymentId), '1');
+    } catch {
+      // no-op
+    }
+  }
+
+  private static async syncPaidBookingToGoogleSheets(paymentResponse: any): Promise<void> {
+    const paymentId = paymentResponse?.razorpay_payment_id as string | undefined;
+    if (!paymentId) return;
+    if (this.hasPaymentBeenSyncedToSheets(paymentId)) return;
+
+    const details = this.getStoredDemoBookingDetails();
+
+    try {
+      const result = await GoogleSheetsService.appendDemoBooking({
+        parentName: details.parentName || '',
+        parentEmail: details.email || '',
+        parentPhone: details.phone || '',
+        childName: details.childName || '',
+        childAge: details.childAge || '',
+        preferredDate: details.preferredDate || '',
+        preferredTime: details.preferredTime || '',
+        interests: details.interests || '',
+        message: details.message || '',
+        bookingId: crypto.randomUUID(),
+        paymentId,
+        paymentStatus: 'paid'
+      });
+
+      if (result.success) {
+        this.markPaymentSyncedToSheets(paymentId);
+        console.log('[Razorpay] ✓ Google Sheets synced for paid booking:', paymentId);
+      } else {
+        console.warn('[Razorpay] Google Sheets sync failed:', result.error || result.message);
+      }
+    } catch (error) {
+      console.warn('[Razorpay] Google Sheets sync error:', error);
+    }
+  }
+
+  private static hasRequiredDemoDetails(details: DemoBookingDetails): boolean {
+    return Boolean(
+      details.parentName &&
+      details.email &&
+      details.phone &&
+      details.childName &&
+      details.childAge &&
+      details.preferredDate &&
+      details.preferredTime
+    );
+  }
+
+  private static async requestDemoDetailsFromUI(initial: DemoBookingDetails): Promise<DemoBookingDetails> {
+    if (typeof window === 'undefined') return initial;
+
+    return new Promise<DemoBookingDetails>((resolve, reject) => {
+      let settled = false;
+
+      const cleanup = () => {
+        window.removeEventListener('vr:demo-details-submitted', onSubmitted as EventListener);
+        window.removeEventListener('vr:demo-details-cancelled', onCancelled as EventListener);
+      };
+
+      const onSubmitted = (event: CustomEvent<DemoBookingDetails>) => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        resolve(event.detail || {});
+      };
+
+      const onCancelled = () => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(new Error('Demo details form was cancelled.'));
+      };
+
+      window.addEventListener('vr:demo-details-submitted', onSubmitted as EventListener);
+      window.addEventListener('vr:demo-details-cancelled', onCancelled as EventListener);
+
+      window.dispatchEvent(
+        new CustomEvent('vr:open-demo-details-form', {
+          detail: initial || {}
+        })
+      );
+    });
+  }
+
+  private static async ensureDemoBookingDetails(): Promise<DemoBookingDetails> {
+    const stored = this.getStoredDemoBookingDetails();
+    // Always open details form before payment so the user confirms current data.
+    const collected = await this.requestDemoDetailsFromUI(stored);
+    const merged = {
+      ...stored,
+      ...(collected || {})
+    };
+    this.storeDemoBookingDetails(merged);
+    return merged;
   }
 
   private static getClientRegionContext(): ClientRegionContext {
@@ -160,7 +319,12 @@ export class RazorpayService {
       }
 
       const fallbackCurrency = region.countryCode === 'IN' ? 'INR' : (options.currency || 'USD');
-      const fallbackAmount = region.countryCode === 'IN' ? 9105 : options.amount; // ~₹91.05 for $1
+      const fallbackAmount = region.countryCode === 'IN' ? 4900 : options.amount; // INR 49.00 for USD 0.54
+
+      const storedDetails = this.getStoredDemoBookingDetails();
+      const prefillName = options.prefillName || storedDetails.parentName || '';
+      const prefillEmail = options.prefillEmail || storedDetails.email || '';
+      const prefillPhone = options.prefillPhone || storedDetails.phone || '';
 
       const razorpayOptions: any = {
         key: this.KEY_ID,
@@ -169,7 +333,8 @@ export class RazorpayService {
         name: options.name || 'VR Robotics Academy',
         description: this.toRazorpayDescription(options.description),
         image: 'https://res.cloudinary.com/dicfqwlfq/image/upload/v1764505259/VR_Robotics_Logo_upscaled_1_rrrrn8.png',
-        handler: (response: any) => {
+        handler: async (response: any) => {
+          await this.syncPaidBookingToGoogleSheets(response);
           if (options.onSuccess) {
             options.onSuccess(response);
             return;
@@ -177,14 +342,21 @@ export class RazorpayService {
           this.defaultSuccessHandler(response);
         },
         prefill: {
-          name: options.prefillName || '',
-          email: options.prefillEmail || '',
-          contact: options.prefillPhone || ''
+          name: prefillName,
+          email: prefillEmail,
+          contact: prefillPhone
         },
         notes: {
           note_key_1: 'Demo Booking',
           note_key_2: 'VR Robotics Academy',
-          program: 'Robotics Course (Grades 1-12)'
+          program: 'Robotics Course (Grades 1-12)',
+          parent_name: this.sanitizeNoteValue(storedDetails.parentName),
+          parent_email: this.sanitizeNoteValue(storedDetails.email),
+          parent_phone: this.sanitizeNoteValue(storedDetails.phone),
+          child_name: this.sanitizeNoteValue(storedDetails.childName),
+          child_age: this.sanitizeNoteValue(storedDetails.childAge),
+          preferred_date: this.sanitizeNoteValue(storedDetails.preferredDate),
+          preferred_time: this.sanitizeNoteValue(storedDetails.preferredTime)
         },
         method: {},
         theme: {
@@ -243,11 +415,15 @@ export class RazorpayService {
     onSuccess?: (response: any) => void,
     onError?: (error: any) => void
   ): Promise<void> {
+    const details = await this.ensureDemoBookingDetails();
     await this.initiatePayment({
-      amount: 100, // 100 cents = USD 1
+      amount: 54, // 54 cents = USD 0.54
       currency: 'USD',
       description: this.PRODUCT_DESCRIPTION,
       name: 'VR Robotics Academy',
+      prefillName: details.parentName || '',
+      prefillEmail: details.email || '',
+      prefillPhone: details.phone || '',
       onSuccess,
       onError
     });
@@ -260,3 +436,4 @@ export class RazorpayService {
 }
 
 export default RazorpayService;
+

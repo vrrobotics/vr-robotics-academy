@@ -194,16 +194,16 @@ export default function Header() {
                   await RazorpayService.initiateDemo1DollarPayment(
                     (response) => {
                       console.log('✓ Payment successful:', response);
-                      trackEvent('demo_booking_payment_success', { 
+                      trackEvent('demo_booking_payment_success', {
                         source: 'header',
-                        paymentId: response.razorpay_payment_id 
+                        paymentId: response.razorpay_payment_id
                       });
                     },
                     (error) => {
                       console.error('✗ Payment failed:', error);
-                      trackEvent('demo_booking_payment_failed', { 
+                      trackEvent('demo_booking_payment_failed', {
                         source: 'header',
-                        error: error?.message 
+                        error: error?.message
                       });
                     }
                   );
@@ -318,16 +318,16 @@ export default function Header() {
                       await RazorpayService.initiateDemo1DollarPayment(
                         (response) => {
                           console.log('Payment successful:', response);
-                          trackEvent('demo_booking_payment_success', { 
+                          trackEvent('demo_booking_payment_success', {
                             source: 'header_mobile',
-                            paymentId: response.razorpay_payment_id 
+                            paymentId: response.razorpay_payment_id
                           });
                         },
                         (error) => {
                           console.error('Payment failed:', error);
-                          trackEvent('demo_booking_payment_failed', { 
+                          trackEvent('demo_booking_payment_failed', {
                             source: 'header_mobile',
-                            error: error?.message 
+                            error: error?.message
                           });
                         }
                       );
@@ -344,3 +344,4 @@ export default function Header() {
     </header>
   );
 }
+

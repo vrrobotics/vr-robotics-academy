@@ -7,7 +7,7 @@ import { BaseCrudService } from '@/integrations';
 import { DemoSessions, TeacherApprovals } from '@/entities';
 import { EmailService } from '@/services/emailService';
 import { GoogleSheetsService } from '@/services/googleSheetsService';
-import PaymentWorkflowService from '@/services/paymentWorkflowService';
+import RazorpayService from '@/services/razorpayService';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 
@@ -67,12 +67,59 @@ export default function DemoBookingPage() {
     loadTeachers();
   }, [searchParams]);
 
+  // Restore previously entered demo booking details (used for Razorpay prefill)
+  useEffect(() => {
+    const saved = RazorpayService.getStoredDemoBookingDetails();
+    if (!saved || Object.keys(saved).length === 0) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      parentName: prev.parentName || saved.parentName || '',
+      email: prev.email || saved.email || '',
+      phone: prev.phone || saved.phone || '',
+      childName: prev.childName || saved.childName || '',
+      childAge: prev.childAge || saved.childAge || '',
+      preferredDate: prev.preferredDate || saved.preferredDate || '',
+      preferredTime: prev.preferredTime || saved.preferredTime || '',
+      interests: prev.interests || saved.interests || '',
+      message: prev.message || saved.message || ''
+    }));
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    RazorpayService.storeDemoBookingDetails(formData);
 
     try {
+      let verifiedPaymentId = paymentId;
+
+      // Form-first flow: collect details, then complete payment.
+      if (!isPaymentVerified || !verifiedPaymentId) {
+        await new Promise<void>((resolve, reject) => {
+          RazorpayService.initiateDemo1DollarPayment(
+            (response) => {
+              const newPaymentId = response?.razorpay_payment_id as string | undefined;
+              if (!newPaymentId) {
+                reject(new Error('Payment succeeded but payment ID is missing.'));
+                return;
+              }
+              setPaymentId(newPaymentId);
+              setIsPaymentVerified(true);
+              verifiedPaymentId = newPaymentId;
+              resolve();
+            },
+            (paymentError) => {
+              const message = paymentError?.message || 'Payment is required to book the demo.';
+              reject(new Error(message));
+            }
+          ).catch((initError) => {
+            reject(initError instanceof Error ? initError : new Error('Unable to open payment checkout.'));
+          });
+        });
+      }
+
       // ✅ Teacher selection is optional - admin will assign later
       const demoSessionData: any = {
         id: crypto.randomUUID(),
@@ -133,36 +180,42 @@ export default function DemoBookingPage() {
       // ⚠️  IMPORTANT: Only update Google Sheets if payment has been verified
       console.log('[DemoBooking] Checking payment status before Google Sheets update...');
       let sheetsSuccess = false;
-      if (isPaymentVerified && paymentId) {
-        console.log('[DemoBooking] ✓ Payment verified, appending booking with payment info to Google Sheet...');
-        try {
-          const googleSheetsResult = await GoogleSheetsService.appendDemoBooking({
-            parentName: formData.parentName,
-            parentEmail: formData.email,
-            parentPhone: formData.phone,
-            childName: formData.childName,
-            childAge: formData.childAge,
-            preferredDate: formData.preferredDate,
-            preferredTime: formData.preferredTime,
-            interests: formData.interests,
-            message: formData.message,
-            bookingId: demoSessionData.id,
-            paymentId: paymentId,
-            paymentStatus: 'paid'
-          });
-          
-          if (googleSheetsResult.success) {
-            console.log('[DemoBooking] ✓ Booking appended to Google Sheet with PAYMENT STATUS: PAID');
-            sheetsSuccess = true;
-          } else {
-            console.warn('[DemoBooking] ⚠ Google Sheets update failed:', googleSheetsResult.error);
+      if (verifiedPaymentId) {
+        if (RazorpayService.hasPaymentBeenSyncedToSheets(verifiedPaymentId)) {
+          console.log('[DemoBooking] Google Sheets already synced for payment:', verifiedPaymentId);
+          sheetsSuccess = true;
+        } else {
+          console.log('[DemoBooking] Payment verified, appending booking with payment info to Google Sheet...');
+          try {
+            const googleSheetsResult = await GoogleSheetsService.appendDemoBooking({
+              parentName: formData.parentName,
+              parentEmail: formData.email,
+              parentPhone: formData.phone,
+              childName: formData.childName,
+              childAge: formData.childAge,
+              preferredDate: formData.preferredDate,
+              preferredTime: formData.preferredTime,
+              interests: formData.interests,
+              message: formData.message,
+              bookingId: demoSessionData.id,
+              paymentId: verifiedPaymentId,
+              paymentStatus: 'paid'
+            });
+
+            if (googleSheetsResult.success) {
+              console.log('[DemoBooking] Booking appended to Google Sheet with PAYMENT STATUS: PAID');
+              RazorpayService.markPaymentSyncedToSheets(verifiedPaymentId);
+              sheetsSuccess = true;
+            } else {
+              console.warn('[DemoBooking] Google Sheets update failed:', googleSheetsResult.error);
+            }
+          } catch (sheetsErr) {
+            console.warn('[DemoBooking] Google Sheets operation failed:', sheetsErr);
           }
-        } catch (sheetsErr) {
-          console.warn('[DemoBooking] ⚠ Google Sheets operation failed:', sheetsErr);
         }
       } else {
-        console.warn('[DemoBooking] ✗ No payment verification - SKIPPING Google Sheets update');
-        console.log('[DemoBooking] Payment Status: Verified=' + isPaymentVerified + ', PaymentID=' + paymentId);
+        console.warn('[DemoBooking] No payment verification - SKIPPING Google Sheets update');
+        console.log('[DemoBooking] Payment Status: Verified=' + isPaymentVerified + ', PaymentID=' + verifiedPaymentId);
       }
 
       // If at least one method succeeded (ideally email or sheets), show success
@@ -197,10 +250,14 @@ export default function DemoBookingPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
+    const updatedData = {
       ...formData,
       [e.target.name]: e.target.value
-    });
+    };
+    setFormData(updatedData);
+
+    // Keep Razorpay prefill details in sync with demo booking form
+    RazorpayService.storeDemoBookingDetails(updatedData);
   };
 
   if (submitted) {
@@ -709,3 +766,6 @@ export default function DemoBookingPage() {
     </>
   );
 }
+
+
+

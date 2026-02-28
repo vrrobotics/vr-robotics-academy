@@ -28,6 +28,8 @@ function toMinorUnits(amountMajor: number, currency: string): number {
 
 async function getUsdToCurrencyRate(targetCurrency: string): Promise<number> {
   if (targetCurrency === 'USD') return 1;
+  // Keep INR demo checkout fixed at ₹49.00 for $0.54.
+  if (targetCurrency === 'INR') return 90.7407407407;
 
   try {
     const res = await fetch(`https://api.frankfurter.app/latest?from=USD&to=${targetCurrency}`);
@@ -40,7 +42,7 @@ async function getUsdToCurrencyRate(targetCurrency: string): Promise<number> {
 
   // Fallback rates for resiliency
   const fallbackRates: Record<string, number> = {
-    INR: 91.05,
+    INR: 90.7407407407,
     EUR: 0.93,
     GBP: 0.79,
     AED: 3.67,
