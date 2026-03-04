@@ -59,13 +59,15 @@ interface ClientRegionContext {
   preferredCurrency: string;
 }
 
-export class RazorpayService {
+  export class RazorpayService {
   private static readonly KEY_ID =
-    ((import.meta as any)?.env?.VITE_RAZORPAY_KEY_ID as string) || 'rzp_test_SLEljQjEAaLhr7';
+    ((import.meta as any)?.env?.VITE_RAZORPAY_KEY_ID as string) || '';
   
   // Dedicated session payment key (for pricing page sessions)
   private static readonly SESSION_KEY_ID =
-    ((import.meta as any)?.env?.VITE_RAZORPAY_SESSION_KEY_ID as string) || 'rzp_test_SLEljQjEAaLhr7';
+    ((import.meta as any)?.env?.VITE_RAZORPAY_SESSION_KEY_ID as string) ||
+    ((import.meta as any)?.env?.VITE_RAZORPAY_KEY_ID as string) ||
+    '';
   
   private static readonly SCRIPT_URL = 'https://checkout.razorpay.com/v1/checkout.js';
   private static readonly DEMO_DETAILS_STORAGE_KEY = 'vr_demo_booking_details';
@@ -715,7 +717,7 @@ export class RazorpayService {
 
     try {
       if (!this.SESSION_KEY_ID) {
-        throw new Error('Missing VITE_RAZORPAY_SESSION_KEY_ID. Configure it in your env file.');
+        throw new Error('Missing VITE_RAZORPAY_SESSION_KEY_ID or VITE_RAZORPAY_KEY_ID. Configure it in your env file.');
       }
 
       await this.loadRazorpayScript();
