@@ -1,8 +1,13 @@
 ---
 import AppRouter from "@/components/Router";
 
-// Allow server-side rendering for API endpoints like Razorpay
-export const prerender = false;
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return [
+    { params: { slug: undefined } },
+  ];
+}
 ---
 
 <html lang="en">
