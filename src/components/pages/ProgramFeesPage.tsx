@@ -19,13 +19,13 @@ export default function ProgramFeesPage() {
   const planPricingById: Record<string, { session: number; month: number; cta: string }> = {
     'plan-basic': { session: 20, month: 160, cta: 'Start Learning' },
     'plan-premium': { session: 25, month: 200, cta: 'Get Started Now' },
-    'plan-elite': { session: 30, month: 200, cta: 'Book Your Session' }
+    'plan-elite': { session: 30, month: 240, cta: 'Book Your Session' }
   };
 
   const fallbackPricingByCta: Record<string, { session: number; month: number; cta: string }> = {
     'start learning': { session: 20, month: 160, cta: 'Start Learning' },
     'get started now': { session: 25, month: 200, cta: 'Get Started Now' },
-    'book your session': { session: 30, month: 200, cta: 'Book Your Session' }
+    'book your session': { session: 30, month: 240, cta: 'Book Your Session' }
   };
 
   const getPlanPricing = (plan: ProgramFees) => {
@@ -113,9 +113,25 @@ export default function ProgramFeesPage() {
         callToActionText: 'Book Your Session'
       }
     ];
-    
-    // Use default plans if database is empty
-    setPlans(items.length > 0 ? items : defaultPlans);
+
+    // If Supabase rows exist but some text fields are empty, merge with defaults
+    const defaultsById = new Map(defaultPlans.map((plan) => [plan._id, plan]));
+    const mergedPlans = items.map((plan) => {
+      const fallback = defaultsById.get(plan._id);
+      if (!fallback) return plan;
+
+      return {
+        ...fallback,
+        ...plan,
+        planName: plan.planName || fallback.planName,
+        shortDescription: plan.shortDescription || fallback.shortDescription,
+        featuresSummary: plan.featuresSummary || fallback.featuresSummary,
+        callToActionText: plan.callToActionText || fallback.callToActionText
+      };
+    });
+
+    // Use defaults if DB is empty; otherwise use merged data
+    setPlans(items.length > 0 ? mergedPlans : defaultPlans);
     setLoading(false);
   };
 
