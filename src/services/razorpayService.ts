@@ -52,6 +52,7 @@ interface RazorpayOrderResponse {
   id: string;
   amount: number;
   currency: string;
+  keyId?: string;
 }
 
 interface ClientRegionContext {
@@ -497,7 +498,10 @@ interface ClientRegionContext {
       throw new Error(payload?.error || 'Unable to create Razorpay order');
     }
 
-    return payload.order as RazorpayOrderResponse;
+    return {
+      ...(payload.order as RazorpayOrderResponse),
+      keyId: payload?.keyId || payload?.key_id
+    };
   }
 
   private static async createSessionOrder(
@@ -528,22 +532,27 @@ interface ClientRegionContext {
       throw new Error(payload?.error || 'Unable to create session order');
     }
 
-    return payload.order as RazorpayOrderResponse;
+    return {
+      ...(payload.order as RazorpayOrderResponse),
+      keyId: payload?.keyId || payload?.key_id
+    };
   }
 
   static async initiatePayment(options: RazorpayOptions): Promise<void> {
     try {
-      if (!this.KEY_ID) {
-        throw new Error('Missing VITE_RAZORPAY_KEY_ID/PUBLIC_RAZORPAY_KEY_ID. Configure it in your env file.');
-      }
-
       await this.loadRazorpayScript();
       const region = this.getClientRegionContext();
       let order: RazorpayOrderResponse | null = null;
+      let checkoutKey = this.KEY_ID;
       try {
         order = await this.createOrder(options.amount, options.currency || 'USD');
+        if (order?.keyId) checkoutKey = order.keyId;
       } catch (createOrderError) {
         console.warn('[Razorpay] Order creation failed, using fallback checkout mode', createOrderError);
+      }
+
+      if (!checkoutKey) {
+        throw new Error('Missing Razorpay checkout key. Set PUBLIC_RAZORPAY_KEY_ID (or VITE_RAZORPAY_KEY_ID) and RAZORPAY_KEY_ID in Vercel, then redeploy.');
       }
 
       const fallbackCurrency = region.countryCode === 'IN' ? 'INR' : (options.currency || 'USD');
@@ -555,7 +564,7 @@ interface ClientRegionContext {
       const prefillPhone = options.prefillPhone || storedDetails.phone || '';
 
       const razorpayOptions: any = {
-        key: this.KEY_ID,
+        key: checkoutKey,
         amount: order?.amount || fallbackAmount,
         currency: order?.currency || fallbackCurrency,
         name: options.name || 'VR Robotics Academy',
@@ -720,13 +729,10 @@ interface ClientRegionContext {
     const description = `${options.planName} - $${amountUsd}/${options.billingMode}`;
 
     try {
-      if (!this.SESSION_KEY_ID) {
-        throw new Error('Missing session Razorpay key. Set VITE_RAZORPAY_SESSION_KEY_ID or PUBLIC_RAZORPAY_SESSION_KEY_ID, or fallback key.');
-      }
-
       await this.loadRazorpayScript();
       const region = this.getClientRegionContext();
       let order: RazorpayOrderResponse | null = null;
+      let checkoutKey = this.SESSION_KEY_ID;
       
       try {
         order = await this.createSessionOrder(
@@ -735,8 +741,13 @@ interface ClientRegionContext {
           options.planName,
           options.billingMode
         );
+        if (order?.keyId) checkoutKey = order.keyId;
       } catch (createOrderError) {
         console.warn('[Razorpay] Session order creation failed, using fallback checkout mode', createOrderError);
+      }
+
+      if (!checkoutKey) {
+        throw new Error('Missing session Razorpay checkout key. Set PUBLIC_RAZORPAY_KEY_ID and RAZORPAY_KEY_ID in Vercel, then redeploy.');
       }
 
       const fallbackCurrency = 'USD';
@@ -771,7 +782,7 @@ interface ClientRegionContext {
       console.log('[Razorpay] 🟢 NOTES STORED IN SESSION STORAGE');
 
       const razorpayOptions: any = {
-        key: this.SESSION_KEY_ID,
+        key: checkoutKey,
         amount: order?.amount || fallbackAmount,
         currency: order?.currency || fallbackCurrency,
         name: 'VR Robotics Academy',
