@@ -17,7 +17,7 @@ interface EmailPayload {
 
 class EmailService {
   private static readonly LOGO_URL =
-    'https://res.cloudinary.com/dicfqwlfq/image/upload/v1764506603/logo_vc6lpc.png';
+    'https://res.cloudinary.com/dicfqwlfq/image/upload/v1764505259/VR_Robotics_Logo_upscaled_1_rrrrn8.png';
   private static readonly ADMIN_EMAIL =
     ((import.meta as any)?.env?.PUBLIC_ADMIN_EMAIL as string) ||
     ((import.meta as any)?.env?.VITE_ADMIN_EMAIL as string) || 'abhinavneeraj.bade@gmail.com';
